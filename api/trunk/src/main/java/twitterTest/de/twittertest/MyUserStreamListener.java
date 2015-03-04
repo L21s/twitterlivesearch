@@ -64,7 +64,7 @@ public class MyUserStreamListener implements UserStreamListener {
 		Query idQuery = null;
 		QueryParser parser = new QueryParser("text", analyzer);
 		try {
-			text = parser.parse("text:kirche");
+			text = parser.parse("text:doktor");
 			idQuery = parser.parse("id:<NUMBER>" + id.intValue() + "<NUMBER>");
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -102,10 +102,11 @@ public class MyUserStreamListener implements UserStreamListener {
 				try {
 					// falsches objekt wird gefunden, weil das textmatching
 					// irgendwie nicht klappt (und die id auch nicht)
-					System.out
-							.println("gefunden:" + isearcher.doc(i).get("id"));
+					System.out.println("gefunden:"
+							+ isearcher.doc(hits[i].doc).get("id"));
 					System.out.println(tweetHolder.getTweets().get(
-							Integer.parseInt(isearcher.doc(i).get("id"))));
+							Integer.parseInt(isearcher.doc(hits[i].doc).get(
+									"id"))));
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

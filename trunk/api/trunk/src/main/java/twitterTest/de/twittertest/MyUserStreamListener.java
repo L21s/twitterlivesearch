@@ -7,14 +7,17 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.IntField;
 import org.apache.lucene.document.TextField;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.store.Directory;
 
 import twitter4j.DirectMessage;
 import twitter4j.StallWarning;
@@ -26,28 +29,27 @@ import twitter4j.UserStreamListener;
 
 public class MyUserStreamListener implements UserStreamListener {
 	private IdGenerator idGenerator;
-	private IndexWriter iwriter;
-	private IndexSearcher isearcher;
 	private Analyzer analyzer;
 	private TweetHolder tweetHolder;
+	private Directory directory;
+	private IndexWriter iwriter;
 
-	public MyUserStreamListener(IdGenerator idGenerator, IndexWriter iwriter,
-			IndexSearcher isearcher, Analyzer analyzer, TweetHolder tweetHolder) {
+	public MyUserStreamListener(IdGenerator idGenerator, Directory directory,
+			Analyzer analyzer, TweetHolder tweetHolder, IndexWriter iwriter) {
 		this.idGenerator = idGenerator;
-		this.iwriter = iwriter;
-		this.isearcher = isearcher;
+		this.directory = directory;
 		this.analyzer = analyzer;
 		this.tweetHolder = tweetHolder;
+		this.iwriter = iwriter;
 	}
 
 	public void onStatus(Status status) {
 		System.out.println("status incoming:" + status.getText());
 		Document doc = new Document();
 		Integer id = idGenerator.getId();
-		tweetHolder.getTweets().put(id, status);
+		tweetHolder.getTweets().put(id.intValue(), status);
 		doc.add(new IntField("id", id, IntField.TYPE_STORED));
-		doc.add(new Field("text", "Frage Frage Frage Frage",
-				TextField.TYPE_NOT_STORED));
+		doc.add(new Field("text", status.getText(), TextField.TYPE_STORED));
 		try {
 			iwriter.addDocument(doc);
 			iwriter.commit();
@@ -57,16 +59,31 @@ public class MyUserStreamListener implements UserStreamListener {
 		Query text = null;
 		QueryParser parser = new QueryParser("text", analyzer);
 		try {
-			text = parser.parse("text:Frage");
+			text = parser.parse("text:oma");
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		BooleanQuery query = new BooleanQuery();
-		// Query idQuery = NumericRangeQuery.newIntRange("id", id, id, true,
-		// true);
-		// query.add(idQuery, Occur.MUST);
+		Query idQuery = NumericRangeQuery.newIntRange("id", id, id, true, true);
+		query.add(idQuery, Occur.MUST);
 		query.add(text, Occur.MUST);
 		ScoreDoc[] hits = null;
+		DirectoryReader ireader;
+		try {
+			if (!DirectoryReader.indexExists(directory)) {
+				return;
+			}
+		} catch (IOException e3) {
+			e3.printStackTrace();
+		}
+
+		try {
+			ireader = DirectoryReader.open(directory);
+		} catch (IOException e2) {
+			ireader = null;
+			e2.printStackTrace();
+		}
+		IndexSearcher isearcher = new IndexSearcher(ireader);
 		try {
 			hits = isearcher.search(query, 1000).scoreDocs;
 		} catch (IOException e1) {
@@ -79,12 +96,18 @@ public class MyUserStreamListener implements UserStreamListener {
 					System.out
 							.println("gefunden:" + isearcher.doc(i).get("id"));
 					System.out.println(tweetHolder.getTweets().get(
-							isearcher.doc(i).get("id")));
+							Integer.parseInt(isearcher.doc(i).get("id"))));
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
+		}
+
+		try {
+			ireader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

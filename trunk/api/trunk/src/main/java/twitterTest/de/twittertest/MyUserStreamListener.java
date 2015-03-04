@@ -8,9 +8,13 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.document.IntField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.util.QueryBuilder;
+import org.apache.lucene.search.ScoreDoc;
 
 import twitter4j.DirectMessage;
 import twitter4j.StallWarning;
@@ -25,28 +29,63 @@ public class MyUserStreamListener implements UserStreamListener {
 	private IndexWriter iwriter;
 	private IndexSearcher isearcher;
 	private Analyzer analyzer;
+	private TweetHolder tweetHolder;
 
 	public MyUserStreamListener(IdGenerator idGenerator, IndexWriter iwriter,
-			IndexSearcher isearcher, Analyzer analyzer) {
+			IndexSearcher isearcher, Analyzer analyzer, TweetHolder tweetHolder) {
 		this.idGenerator = idGenerator;
 		this.iwriter = iwriter;
 		this.isearcher = isearcher;
 		this.analyzer = analyzer;
+		this.tweetHolder = tweetHolder;
 	}
 
 	public void onStatus(Status status) {
+		System.out.println("status incoming:" + status.getText());
 		Document doc = new Document();
 		Integer id = idGenerator.getId();
+		tweetHolder.getTweets().put(id, status);
 		doc.add(new IntField("id", id, IntField.TYPE_STORED));
-		doc.add(new Field("text", status.getText(), TextField.TYPE_NOT_STORED));
+		doc.add(new Field("text", "Frage Frage Frage Frage",
+				TextField.TYPE_NOT_STORED));
 		try {
 			iwriter.addDocument(doc);
 			iwriter.commit();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		QueryBuilder builder = new QueryBuilder(analyzer);
-		Query luceneQuery = builder.
+		Query text = null;
+		QueryParser parser = new QueryParser("text", analyzer);
+		try {
+			text = parser.parse("text:Frage");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		BooleanQuery query = new BooleanQuery();
+		// Query idQuery = NumericRangeQuery.newIntRange("id", id, id, true,
+		// true);
+		// query.add(idQuery, Occur.MUST);
+		query.add(text, Occur.MUST);
+		ScoreDoc[] hits = null;
+		try {
+			hits = isearcher.search(query, 1000).scoreDocs;
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		if (hits != null) {
+			for (int i = 0; i < hits.length; i++) {
+				try {
+					System.out
+							.println("gefunden:" + isearcher.doc(i).get("id"));
+					System.out.println(tweetHolder.getTweets().get(
+							isearcher.doc(i).get("id")));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {

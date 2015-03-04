@@ -5,6 +5,7 @@ public class IdGenerator {
 
 	public synchronized int getId() {
 		id++;
+		System.out.println("gebe id aus:" + id);
 		return id;
 	}
 }

@@ -20,6 +20,7 @@ public class Twitter4Serioussearch {
 	private IndexWriterConfig config;
 	private IndexWriter iwriter;
 	private KeywordHolder keywordHolder;
+	private TwitterStream twitterStream;
 
 	public Twitter4Serioussearch() throws IOException {
 		idGenerator = new IdGenerator();
@@ -34,9 +35,16 @@ public class Twitter4Serioussearch {
 		iwriter = new IndexWriter(directory, config);
 		UserStreamListener listener = new MyUserStreamListener(idGenerator,
 				directory, analyzer, tweetHolder, keywordHolder, iwriter);
-		TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
+		twitterStream = new TwitterStreamFactory().getInstance();
 		twitterStream.addListener(listener);
 		twitterStream.user();
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		twitterStream.shutdown();
+		iwriter.close();
+		super.finalize();
 	}
 
 	public void registerKeyword(String keyword, String sessionId,

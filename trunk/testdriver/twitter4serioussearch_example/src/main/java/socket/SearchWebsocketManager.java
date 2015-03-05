@@ -2,7 +2,6 @@ package socket;
 
 import java.io.StringReader;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -14,11 +13,16 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
-@ApplicationScoped
+import twitter.MyTweetListener;
+import twitter.TwitterMaschine;
+
 @ServerEndpoint("/tweet")
 public class SearchWebsocketManager {
 	@Inject
 	private SearchSessionHandler handler;
+	
+	@Inject
+	private TwitterMaschine twitter;
 	
 	@OnOpen
 	public void open(Session session) {
@@ -40,7 +44,7 @@ public class SearchWebsocketManager {
 		JsonObject jsonMessage = reader.readObject();
 		
 		if("add".equals(jsonMessage.getString("action"))) {
-			handler.addTweet(jsonMessage.getString("name"));
+			twitter.getTwitter().registerKeyword(jsonMessage.getString("name"), session.getId(), new MyTweetListener(session));
 		}
 	}
 }

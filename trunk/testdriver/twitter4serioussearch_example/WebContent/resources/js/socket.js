@@ -1,33 +1,42 @@
-var socket = new WebSocket("ws://localhost:8080/twitterStream/tweet");
-socket.onmessage = onMessage;
-
 function onMessage(event) {
-    var device = JSON.parse(event.data);
-    if (device.action === "add") {
-        printSearchKeyword(device.name);
-    }
+	var tweet = JSON.parse(event.data);
+	if (tweet.action === "new_tweet") {
+		printSearchKeyword(tweet.text);
+	}
 }
 
-function addSearchKeyword(name) {
-    var SearchKeyword = {
-        action: "add",
-        name: name
-    };
-    socket.send(JSON.stringify(SearchKeyword));
+function openSocket() {
+	var socket = new WebSocket("ws://localhost:8080/twitterStream/tweet");
+
+	return socket;
 }
 
-function printSearchKeyword(keyword) {
-	var searchQueries = document.getElementById("searchqueries");
-	
+function addSearchKeyword(query) {
+	var socket = new WebSocket("ws://" + document.location.host + "/twitterStream/tweet");
+
+	socket.onmessage = onMessage;
+	socket.onopen = function() {
+		var SearchQuery = {
+			action : "add",
+			name : query
+		};
+		socket.send(JSON.stringify(SearchQuery));
+	}
+
+}
+
+function printSearchKeyword(tweet) {
+	var searchQueries = document.getElementById("tweets");
+
 	var newQuery = document.createElement("li");
-	newQuery.innerHTML = keyword;
+	newQuery.innerHTML = tweet;
 	searchQueries.appendChild(newQuery);
 }
 
 function formSubmit() {
 	var form = document.getElementById("formular")
-	var tweet = form.elements["formular:search"].value;
-	addSearchKeyword(tweet);
-	form.elements["formular:search"].reset();
-	
+	var query = form.elements["formular:search"].value;
+	addSearchKeyword(query);
+	//document.getElementById("formular:search").reset();
+
 }

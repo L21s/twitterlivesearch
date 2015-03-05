@@ -8,7 +8,6 @@ public class TwitterTest {
 
 	public static void main(String[] args) throws TwitterException, IOException {
 		Twitter4Serioussearch twitterMaschine = new Twitter4Serioussearch();
-
 		// Document doc = new Document();
 		// String text = "I got ten houses.";
 		// doc.add(new Field("id", "1", TextField.TYPE_STORED));

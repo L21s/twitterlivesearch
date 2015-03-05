@@ -2,9 +2,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>twitterTest</groupId>
-	<artifactId>de.twittertest</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<groupId>twitter4serioussearch</groupId>
+	<artifactId>de.twitter4serioussearch</artifactId>
+	<version>0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>de.twittertest</name>
@@ -91,6 +91,6 @@
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-queries</artifactId>
 			<version>5.0.0</version>
-		</dependency>
+		</dependency>		
 	</dependencies>
 </project>

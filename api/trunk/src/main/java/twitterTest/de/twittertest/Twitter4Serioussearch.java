@@ -39,8 +39,14 @@ public class Twitter4Serioussearch {
 		twitterStream.user();
 	}
 
-	public void registerKeyword(String keyword, TweetListener actionListener) {
-		keywordHolder.putKeyword(keyword, actionListener);
+	public void registerKeyword(String keyword, String sessionId,
+			TweetListener actionListener) {
+		keywordHolder.putKeyword(keyword, sessionId, actionListener);
 		// TODO in persitenten Suchen
+	}
+
+	public void unregisterKeyword(String keyword, String sessionId,
+			TweetListener actionListener) {
+		keywordHolder.removeKeyword(keyword, sessionId, actionListener);
 	}
 }

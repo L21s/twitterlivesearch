@@ -83,11 +83,6 @@ public class MyUserStreamListener implements UserStreamListener {
 		}
 		IndexSearcher isearcher = new IndexSearcher(ireader);
 		for (String keyword : keywordHolder.getKeywords().keySet()) {
-			System.out.println(Thread.currentThread().getName() + " : "
-					+ keyword);
-
-			System.out.println(keywordHolder.getKeywords().hashCode());
-
 			try {
 				text = parser.parse("text:" + keyword);
 				idQuery = parser.parse("id:<NUMBER>" + id.intValue()

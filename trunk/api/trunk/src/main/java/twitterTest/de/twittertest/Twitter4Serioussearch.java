@@ -19,11 +19,13 @@ public class Twitter4Serioussearch {
 	private Analyzer analyzer;
 	private IndexWriterConfig config;
 	private IndexWriter iwriter;
+	private KeywordHolder keywordHolder;
 
 	public Twitter4Serioussearch() throws IOException {
 		idGenerator = new IdGenerator();
 		tweetHolder = new TweetHolder();
 		analyzer = new StandardAnalyzer();
+		keywordHolder = new KeywordHolder();
 		// Store the index in memory:
 		Directory directory = new RAMDirectory();
 		// To store an index on disk, use this instead:
@@ -31,13 +33,14 @@ public class Twitter4Serioussearch {
 		config = new IndexWriterConfig(analyzer);
 		iwriter = new IndexWriter(directory, config);
 		UserStreamListener listener = new MyUserStreamListener(idGenerator,
-				directory, analyzer, tweetHolder, iwriter);
+				directory, analyzer, tweetHolder, keywordHolder, iwriter);
 		TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
 		twitterStream.addListener(listener);
 		twitterStream.user();
 	}
 
-	public void registerKeyword() {
-
+	public void registerKeyword(String keyword, TweetListener actionListener) {
+		keywordHolder.putKeyword(keyword, actionListener);
+		// TODO in persitenten Suchen
 	}
 }

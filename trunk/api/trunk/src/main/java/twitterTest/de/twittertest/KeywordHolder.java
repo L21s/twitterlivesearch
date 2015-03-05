@@ -16,7 +16,8 @@ public class KeywordHolder {
 			TweetListener actionListener) {
 		Map<String, TweetListener> listeners = keywords.get(keyword);
 		if (listeners == null) {
-			listeners = new HashMap<>();
+			listeners = Collections
+					.synchronizedMap(new HashMap<String, TweetListener>());
 			listeners.put(sessionId, actionListener);
 			keywords.put(keyword, listeners);
 			return;

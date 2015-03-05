@@ -106,7 +106,7 @@ public class MyUserStreamListener implements UserStreamListener {
 						System.out.println("gefunden:"
 								+ isearcher.doc(hits[i].doc).get("id"));
 						for (TweetListener actionListener : keywordHolder
-								.getKeywords().get(keyword)) {
+								.getKeywords().get(keyword).values()) {
 							actionListener.handleNewTweet(tweetHolder
 									.getTweets().get(
 											Integer.parseInt(isearcher.doc(

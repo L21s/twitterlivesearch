@@ -6,7 +6,7 @@ function onMessage(event) {
 }
 
 function openSocket() {
-	var socket = new WebSocket("ws://localhost:8080/twitterStream/tweet");
+	var socket = new WebSocket("ws://localhost:8080/twitter4serioussearch_testdriver/tweet");
 
 	return socket;
 }

@@ -1,4 +1,4 @@
-package twitterTest.de.twittertest;
+package de.twitter4serioussearch;
 
 public class IdGenerator {
 	private Integer id = Integer.MIN_VALUE;

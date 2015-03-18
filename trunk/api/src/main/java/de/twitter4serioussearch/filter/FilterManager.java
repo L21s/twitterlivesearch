@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import twitter4j.Status;
 import twitter4j.UserStreamListener;
 import de.twitter4serioussearch.configuration.ConfigurationHolder;
@@ -18,6 +21,7 @@ import de.twitter4serioussearch.configuration.management.ConfigurationValues.Str
  *
  */
 public class FilterManager {
+	private static Logger log = LogManager.getLogger();
 	/**
 	 * global filters: every tweet has to match these filters
 	 */
@@ -104,6 +108,9 @@ public class FilterManager {
 	 * @return true, if the filter was really added; false if it was already registered
 	 */
 	public boolean addGlobalFilter(TweetFilter filter) {
+		if(log.isTraceEnabled()) {
+			log.trace("Registered global Filter: " + filter.getClass().getSimpleName());
+		}
 		return globalFilters.add(filter);
 	}
 	
@@ -136,6 +143,10 @@ public class FilterManager {
 		
 		if(userStreamFilter.get(listener) == null) {
 			userStreamFilter.put(listener, new HashSet<TweetFilter>());
+		}
+		
+		if(log.isTraceEnabled()) {
+			log.trace("Registered userStreamFilter Filter: " + filter.getClass().getSimpleName() + " on " + filter.getClass().getSimpleName());
 		}
 		return userStreamFilter.get(listener).add(filter);
 	}

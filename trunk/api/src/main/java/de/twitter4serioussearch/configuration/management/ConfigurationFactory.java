@@ -7,7 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.queryparser.classic.QueryParser.Operator;
 
 import de.twitter4serioussearch.configuration.ConfigurationHolder;
@@ -28,7 +29,7 @@ import de.twitter4serioussearch.configuration.management.ConfigurationValues.Str
 public class ConfigurationFactory {
 	public static final String PROPERTY_FILE = "twitter4serioussearch.properties";
 
-	private static Logger log = Logger.getLogger(ConfigurationFactory.class);
+	private static Logger log = LogManager.getLogger();
 
 	private ConfigurationFactory() {
 	}
@@ -115,11 +116,13 @@ public class ConfigurationFactory {
 		}
 
 		if (modifiedProperties != properties.size()) {
-			log.warn("You have only modified "
+			log.warn("You only modified "
 					+ modifiedProperties
-					+ " properties, but your Properties-File contains "
+					+ " propertie(s), but your Properties-File contains "
 					+ properties.size()
-					+ " properties. It seems as if you were trying to set another property, which was ignored because it is not known by the system. Check your properties-file in case something does not work as expected.");
+					+ " properties. It seems as if you are trying to set another property, " 
+					+ "which was ignored because it is not known by the system. "
+					+ "Check your properties-file in case something does not work as expected.");
 		}
 	}
 

@@ -37,7 +37,6 @@ public class Tokenizer {
 			stream.close();
 			analyzer.close();
 		} catch (IOException e) {
-			// not thrown b/c we're using a string reader...
 			throw new RuntimeException(e);
 		}
 		return tokens;

@@ -3,6 +3,8 @@ package de.twitter4serioussearch;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.Directory;
@@ -15,13 +17,14 @@ import de.twitter4serioussearch.search.Searcher;
 public class Twitter4Serioussearch {
 
 	private IndexWriter iwriter;
-	private QueryHolder keywordHolder;
+	private QueryHolder queryHolder;
 	private TwitterStream twitterStream;
 	private Directory currentDirectory;
 	private TweetHolder tweetHolder;
 	private IdGenerator idGenerator;
 	private Searcher searcher;
-
+	private static Logger log = LogManager.getLogger();
+	
 	/**
 	 * Registriert einen {@link de.twitter4serioussearch.TweetListener
 	 * TweetListener} für die Kombination aus Query und Session
@@ -36,14 +39,17 @@ public class Twitter4Serioussearch {
 	 *            der invoked wird, sobald ein zum query passender Tweet
 	 *            empfangen wurde
 	 */
-	public void registerQuery(String query, String sessionId,
-			TweetListener actionListener) {
+	public void registerQuery(String query, String sessionId, TweetListener actionListener) {
+		
 		query = StringUtils.join(Tokenizer.getTokensForString(query), " ");
-		keywordHolder.registerQuery(query, sessionId, actionListener);
+		queryHolder.registerQuery(query, sessionId, actionListener);
+		if(log.isTraceEnabled()) {
+			log.trace("Registered Query : " + query + " (untokenized) on Session " + sessionId);
+		}
 		List<Document> documents = searcher.searchForTweets(query);
 		for (Document document : Util.safe(documents)) {
 			actionListener.handleNewTweet(tweetHolder.getTweets().get(
-					Integer.parseInt(document.get(FieldNames.ID.getField()))));
+					Integer.parseInt(document.get(FieldNames.ID.getField())))); 
 		}
 	}
 
@@ -58,7 +64,7 @@ public class Twitter4Serioussearch {
 	 */
 	public void unregisterQuery(String query, String sessionId) {
 		query = StringUtils.join(Tokenizer.getTokensForString(query), " ");
-		keywordHolder.unregisterQuery(query, sessionId);
+		queryHolder.unregisterQuery(query, sessionId);
 	}
 
 	/**
@@ -68,7 +74,7 @@ public class Twitter4Serioussearch {
 	 *            eindeutiger Session Identifier
 	 */
 	public void unregisterSession(String sessionId) {
-		keywordHolder.unregisterSession(sessionId);
+		queryHolder.unregisterSession(sessionId);
 	}
 
 	TwitterStream getTwitterStream() {
@@ -84,6 +90,9 @@ public class Twitter4Serioussearch {
 		twitterStream.clearListeners();
 		twitterStream.cleanUp();
 		twitterStream.shutdown();
+		if(log.isInfoEnabled()) {
+			log.info("Cleanup invoked: listeners are cleared, stream is cleaned up and shut down.");
+		}
 		iwriter.close();
 		super.finalize();
 	}
@@ -97,11 +106,11 @@ public class Twitter4Serioussearch {
 	}
 
 	public QueryHolder getKeywordHolder() {
-		return keywordHolder;
+		return queryHolder;
 	}
 
 	public void setKeywordHolder(QueryHolder keywordHolder) {
-		this.keywordHolder = keywordHolder;
+		this.queryHolder = keywordHolder;
 	}
 
 	public Directory getCurrentDirectory() {

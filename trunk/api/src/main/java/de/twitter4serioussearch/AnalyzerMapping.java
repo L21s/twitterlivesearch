@@ -5,7 +5,8 @@ import java.util.Map;
 
 import me.champeau.ld.UberLanguageDetector;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.de.GermanAnalyzer;
@@ -24,24 +25,21 @@ public class AnalyzerMapping {
 	public final static String TOKEN_DELIMITER = " ";
 	public final static Analyzer ANALYZER_FOR_DELIMITER = new WhitespaceAnalyzer();
 	private final static Map<String, Analyzer> cache = new HashMap<String, Analyzer>();
-
+	private static Logger log = LogManager.getLogger();
+	
 	static {
 		try {
-			Logger log = Logger.getLogger(AnalyzerMapping.class);
-			log.info("hallo1");
 			mapping.put("de", GermanAnalyzer.class);
 			mapping.put("en", EnglishAnalyzer.class);
 			mapping.put("fr", FrenchAnalyzer.class);
 		} catch(Exception e) {
-			System.out.println(e);
+			log.error("Error in initializer", e);
 		}
 		
 	}
 	
 
 	public static Analyzer getAnalyzerForLanguage(String languageCode) {
-		Logger log = Logger.getLogger(AnalyzerMapping.class);
-		log.info("hallo2");
 		Analyzer analyzer = null;
 		if (cache.get(languageCode) == null) {
 			try {

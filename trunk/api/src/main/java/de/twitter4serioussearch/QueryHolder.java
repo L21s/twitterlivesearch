@@ -6,9 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.twitter4serioussearch.common.Util;
 
-//TODO rename!!!
 public class QueryHolder {
 	// mapping von query zu map<sessionId, Listener>
 	private Map<String, Map<String, TweetListener>> queries = Collections
@@ -16,7 +18,9 @@ public class QueryHolder {
 	// mapping von sessionId zu List<keyword>
 	private Map<String, List<String>> queriesForSessions = Collections
 			.synchronizedMap(new HashMap<>());
-
+	
+	private static Logger log = LogManager.getLogger();
+	
 	public Map<String, Map<String, TweetListener>> getQueries() {
 		return queries;
 	}
@@ -53,6 +57,10 @@ public class QueryHolder {
 			queriesForSessions.put(sessionId, keywordsForSession);
 		}
 		keywordsForSession.add(query);
+		
+		if(log.isTraceEnabled()) {
+			log.trace("Registered Query : " + query + " (untokenized) on Session " + sessionId);
+		}
 	}
 
 	/**
@@ -67,6 +75,9 @@ public class QueryHolder {
 	public void unregisterQuery(String query, String sessionId) {
 		Map<String, TweetListener> listeners = queries.get(query);
 		Util.safe(listeners).remove(sessionId);
+		if(log.isTraceEnabled()) {
+			log.trace("Deregistered Query : " + query + " (untokenized) on Session " + sessionId);
+		}
 	}
 
 	/**

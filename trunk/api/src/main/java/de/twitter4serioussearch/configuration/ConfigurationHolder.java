@@ -1,6 +1,7 @@
 package de.twitter4serioussearch.configuration;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.twitter4serioussearch.configuration.management.AbstractConfiguration;
 
@@ -16,7 +17,7 @@ public class ConfigurationHolder {
 	 */
 	private static ConfigurationHolder instance;
 	
-	private static Logger log = Logger.getLogger(ConfigurationHolder.class);
+	private static Logger log = LogManager.getLogger();
 	
 	/** 
 	 * private due to singleton pattern

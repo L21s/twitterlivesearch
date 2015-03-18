@@ -3,7 +3,8 @@ package de.twitter4serioussearch;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
@@ -20,7 +21,7 @@ import de.twitter4serioussearch.configuration.management.ConfigurationValues.Str
 import de.twitter4serioussearch.search.Searcher;
 
 public class Twitter4SerioussearchFactory {
-	private static Logger log = Logger.getLogger(Twitter4SerioussearchFactory.class);
+	private static Logger log = LogManager.getLogger();
 	
 	public static Twitter4Serioussearch build() {
 		Twitter4Serioussearch twitter = null;
@@ -46,7 +47,7 @@ public class Twitter4SerioussearchFactory {
 				log.trace("initialized FS-Directory on path " + configuration.getDirectory());
 			}
 			IndexWriter iwriter = new IndexWriter(directory, indexWriterConfig);
-			Searcher searcher = new Searcher(directory, queryHolder, tweetHolder);
+			Searcher searcher = new Searcher(directory);
 			
 			twitterStream.addListener(new TwitterStreamListener(directory, tweetHolder, queryHolder, iwriter, searcher));
 			if(configuration.getStreamConfig() == StreamConfig.USER_STREAM) {

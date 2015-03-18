@@ -12,8 +12,6 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 public class Tokenizer {
 	public static List<String> getTokensForString(String stringToAnalyze,
 			Analyzer analyzer) {
-		System.out.println("stringToAnalyze:" + stringToAnalyze);
-		System.out.println("analyzer" + analyzer);
 		List<String> tokens = new ArrayList<String>();
 		try {
 			TokenStream stream = analyzer.tokenStream(null, new StringReader(

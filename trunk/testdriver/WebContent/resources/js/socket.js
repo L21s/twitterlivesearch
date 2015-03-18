@@ -5,11 +5,6 @@ function onMessage(event) {
 	}
 }
 
-function openSocket() {
-	var socket = new WebSocket("ws://localhost:8080/twitter4serioussearch_testdriver/tweet");
-
-	return socket;
-}
 
 function addSearchKeyword(query) {
 	var socket = new WebSocket("ws://" + document.location.host + "/twitterStream/tweet");

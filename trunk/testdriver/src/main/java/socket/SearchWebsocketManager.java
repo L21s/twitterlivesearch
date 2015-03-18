@@ -44,7 +44,7 @@ public class SearchWebsocketManager {
 		JsonObject jsonMessage = reader.readObject();
 		
 		if("add".equals(jsonMessage.getString("action"))) {
-			twitter.getTwitter().registerKeyword(jsonMessage.getString("name"), session.getId(), new MyTweetListener(session));
+			twitter.getTwitter().registerQuery(jsonMessage.getString("name"), session.getId(), new MyTweetListener(session));
 		}
 	}
 }

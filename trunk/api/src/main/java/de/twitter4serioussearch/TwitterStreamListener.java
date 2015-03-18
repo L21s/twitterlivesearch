@@ -43,7 +43,9 @@ public class TwitterStreamListener implements UserStreamListener, StatusListener
 
 	@Override
 	public void onStatus(Status status) {
-		log.info("Incoming Tweet: "  + status.getText());
+		if(log.isTraceEnabled()) {
+			log.trace("Incoming Tweet: "  + status.getText());
+		}
 		
 		Document doc = new Document();
 		Integer id = IdGenerator.getInstance().getNextId();
@@ -57,6 +59,11 @@ public class TwitterStreamListener implements UserStreamListener, StatusListener
 		String textForDoc = StringUtils.join(Tokenizer.getTokensForString(
 				status.getText(), status.getLang()),
 				AnalyzerMapping.TOKEN_DELIMITER);
+		
+		if(log.isTraceEnabled()) {
+			log.trace("Indexing Document: " + textForDoc);
+		}
+		
 		doc.add(new Field(FieldNames.TEXT.getField(), textForDoc,
 				TextField.TYPE_NOT_STORED));
 		try {

@@ -10,6 +10,7 @@ public class TweetHolder {
 	private Map<Integer, Status> tweets = Collections
 			.synchronizedMap(new HashMap<Integer, Status>());
 
+	// TODO löschen wenn voll
 	public Map<Integer, Status> getTweets() {
 		return tweets;
 	}

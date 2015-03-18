@@ -1,14 +1,11 @@
 package twitterTest.de.twittertest;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.IntField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
@@ -39,7 +36,6 @@ public class MyUserStreamListener implements UserStreamListener {
 	private Directory directory;
 	private IndexWriter iwriter;
 	private KeywordHolder keywordHolder;
-	private Map<String, Class> analyzerMapping = new HashMap<>();
 
 	public MyUserStreamListener(IdGenerator idGenerator, Directory directory,
 			Analyzer analyzer, TweetHolder tweetHolder,
@@ -57,10 +53,6 @@ public class MyUserStreamListener implements UserStreamListener {
 		Document doc = new Document();
 		Integer id = idGenerator.getId();
 		tweetHolder.getTweets().put(id.intValue(), status);
-		FieldType num = new FieldType();
-		num.setNumericType(FieldType.NumericType.INT);
-		num.setStored(true);
-		// doc.add(new IntField("id", id.intValue(), num));
 		doc.add(new IntField("id", id, Field.Store.YES));
 		String textForDoc = StringUtils.join(Tokenizer.getTokensForString(
 				status.getText(), status.getLang()), " ");

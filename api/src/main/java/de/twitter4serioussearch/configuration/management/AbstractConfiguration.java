@@ -41,11 +41,11 @@ public abstract class AbstractConfiguration {
 	
 	/**
 	 * Die maximale Anzahl von Tweets die im Buffer vorgehalten werden soll. <br /> <br />
-	 * <b>Property-Key:</b> twitter4serioussearch.maxNumberTweets (siehe: {@link ConfigurationKey#MAX_NUM_TWEETS}) <br />
+	 * <b>Property-Key:</b> twitter4serioussearch.maxNumberOfTweets (siehe: {@link ConfigurationKey#MAX_NUM_TWEETS}) <br />
 	 * <b>Property-Values:</b> Zahl
 	 * <b>Default:</b> 50000
 	 */
-	private Integer maxNumberTweets; // TODO besser: maxNumberOfTweets
+	private Integer maxNumberOfTweets;
 	
 	/**
 	 * The default operator which is used to connect tokens in query string. <br /> <br />
@@ -83,19 +83,19 @@ public abstract class AbstractConfiguration {
 		this.directory = directory;
 	}
 
-	public Integer getMaxNumberTweets() {
-		return maxNumberTweets;
+	public Integer getMaxNumberOfTweets() {
+		return maxNumberOfTweets;
 	}
 
-	void setMaxNumberTweets(Integer maxNumberTweets) {
-		this.maxNumberTweets = maxNumberTweets;
+	void setMaxNumberOfTweets(Integer maxNumberTweets) {
+		this.maxNumberOfTweets = maxNumberTweets;
 	}
 
 	public Operator getDefaultOperator() {
 		return defaultOperator;
 	}
 
-	public void setDefaultOperator(Operator defaultOperator) {
+	void setDefaultOperator(Operator defaultOperator) {
 		this.defaultOperator = defaultOperator;
 	}
 

@@ -97,7 +97,7 @@ public class ConfigurationFactory {
 		if ((value = properties.get(ConfigurationKey.MAX_NUM_TWEETS)) != null) {
 			log.trace(ConfigurationKey.MAX_NUM_TWEETS + ": " + value);
 			try {
-				config.setMaxNumberTweets(Integer.parseInt(value));
+				config.setMaxNumberOfTweets(Integer.parseInt(value));
 				modifiedProperties++;
 			} catch(NumberFormatException e) {
 				log.error("You tried to set the maximum number of tweets, but the key was not a number. Please only assign numbers to this property.", e);

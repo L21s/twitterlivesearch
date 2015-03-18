@@ -10,6 +10,13 @@ import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.fr.FrenchAnalyzer;
 
+/**
+ * Hilfsklasse, um den passenden language specific
+ * {@link org.apache.lucene.analysis.Analyzer Analyzer} zu ermitteln
+ *
+ * @author tobiaslarscheid
+ *
+ */
 public class AnalyzerMapping {
 	private static Map<String, Class<? extends Analyzer>> mapping = new HashMap<>();
 
@@ -26,11 +33,16 @@ public class AnalyzerMapping {
 		if (cache.get(languageCode) == null) {
 			try {
 				if (mapping.get(languageCode) == null) {
-					return (Analyzer) Class.forName(
+					if (cache.get("de") != null) {
+						return cache.get("de");
+					}
+					analyzer = (Analyzer) Class.forName(
 							GermanAnalyzer.class.getName()).newInstance();
+					cache.put("de", analyzer);
 				}
 				analyzer = (Analyzer) Class.forName(
 						mapping.get(languageCode).getName()).newInstance();
+				cache.put(languageCode, analyzer);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {

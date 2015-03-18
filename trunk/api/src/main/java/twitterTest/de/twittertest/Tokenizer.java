@@ -9,7 +9,19 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 
+/**
+ * Hilfsklasse um Strings zu tokenisieren
+ * 
+ * @author tobiaslarscheid
+ */
 public class Tokenizer {
+	/**
+	 * @param stringToAnalyze
+	 *            String der tokenisiert werden soll
+	 * @param analyzer
+	 *            Analyzer, der zur analyse verwendet werden soll
+	 * @return Liste von tokens
+	 */
 	public static List<String> getTokensForString(String stringToAnalyze,
 			Analyzer analyzer) {
 		List<String> tokens = new ArrayList<String>();
@@ -31,11 +43,34 @@ public class Tokenizer {
 		return tokens;
 	}
 
+	/**
+	 * Tokenisiert einen gegebenen String, ermittelt automatisch Sprache des
+	 * Strings und verwendet den laut
+	 * {@link twitterTest.de.twittertest.AnalyzerMapping AnalyzerMapping}
+	 * passenden language specific {@link org.apache.lucene.analysis.Analyzer
+	 * Analyzer}
+	 *
+	 * @param stringToAnalyze
+	 *            String der tokenisiert werden soll
+	 * @return Liste von tokens
+	 */
 	public static List<String> getTokensForString(String stringToAnalyze) {
 		return getTokensForString(stringToAnalyze,
 				AnalyzerMapping.getAnalyzerForText(stringToAnalyze));
 	}
 
+	/**
+	 * Tokenisiert einen gegebenen String, verwendet den laut
+	 * {@link twitterTest.de.twittertest.AnalyzerMapping AnalyzerMapping} zum
+	 * gegebenen languageCode passenden language specific
+	 * {@link org.apache.lucene.analysis.Analyzer Analyzer}
+	 *
+	 * @param languageCode
+	 *            zweistelliger ISO Code der verwendeten Sprache
+	 * @param stringToAnalyze
+	 *            String der tokenisiert werden soll
+	 * @return Liste von tokens
+	 */
 	public static List<String> getTokensForString(String stringToAnalyze,
 			String languageCode) {
 		return getTokensForString(stringToAnalyze,

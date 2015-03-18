@@ -10,7 +10,7 @@ public class IdGenerator {
 	public static IdGenerator getInstance() {
 		if (instance == null) {
 			instance = new IdGenerator(ConfigurationHolder.getConfiguration()
-					.getMaxNumberOfTweets());
+					.getMaxNumberTweets());
 		}
 		return instance;
 	}

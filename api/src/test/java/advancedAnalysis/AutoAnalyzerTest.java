@@ -17,7 +17,7 @@ import org.junit.Test;
 
 import de.twitter4serioussearch.IdGenerator;
 import de.twitter4serioussearch.QueryHolder;
-import de.twitter4serioussearch.MyUserStreamListener;
+import de.twitter4serioussearch.TwitterStreamListener;
 import de.twitter4serioussearch.Tokenizer;
 import de.twitter4serioussearch.TweetHolder;
 import twitter4j.GeoLocation;
@@ -55,7 +55,7 @@ public class AutoAnalyzerTest extends TestCase {
 		// Directory directory = FSDirectory.open("/tmp/testindex");
 		config = new IndexWriterConfig(analyzer);
 		iwriter = new IndexWriter(directory, config);
-		listener = new MyUserStreamListener(idGenerator, directory, analyzer,
+		listener = new TwitterStreamListener(idGenerator, directory, analyzer,
 				tweetHolder, keywordHolder, iwriter);
 	}
 

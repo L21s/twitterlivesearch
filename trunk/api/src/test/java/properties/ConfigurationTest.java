@@ -27,7 +27,7 @@ public class ConfigurationTest extends TestCase{
 		map.put(prefix + "directory", "/bla/test");
 		map.put(prefix + "defaultOperator", "OR");
 		ConfigurationFactory.createConfiguration(map);
-		assertEquals(100, ConfigurationHolder.getConfiguration().getMaxNumberTweets().intValue());
+		assertEquals(100, ConfigurationHolder.getConfiguration().getMaxNumberOfTweets().intValue());
 		assertEquals(StreamConfig.GARDENHOSE, ConfigurationHolder.getConfiguration().getStreamConfig());
 		assertEquals(DirectoryConfig.FS_DIRECTORY, ConfigurationHolder.getConfiguration().getDirectoryConfig());
 		assertEquals("/bla/test", ConfigurationHolder.getConfiguration().getDirectory());

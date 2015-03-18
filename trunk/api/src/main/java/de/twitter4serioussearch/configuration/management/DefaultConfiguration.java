@@ -15,7 +15,7 @@ public class DefaultConfiguration extends AbstractConfiguration{
 		setStreamConfig(StreamConfig.USER_STREAM);
 		setDirectoryConfig(DirectoryConfig.RAM);
 		setDirectory("/var/lucene/index");
-		setMaxNumberTweets(50000);
+		setMaxNumberOfTweets(50000);
 		setDefaultOperator(Operator.AND);
 	}
 }

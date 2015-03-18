@@ -11,7 +11,6 @@ public class ConfigurationValues {
 	/**
 	 * Property-Key: twitter4serioussearch.streamConfig ({@link ConfigurationKey#STREAM_CONFIG}) <br />
 	 * Eigenschaften: {@link AbstractConfiguration#getStreamConfig()}
-	 * @author schmitzhermes
 	 *
 	 */
 	public static enum StreamConfig {
@@ -20,8 +19,7 @@ public class ConfigurationValues {
 	
 	/**
 	 * Property-Key: twitter4serioussearch.directoryConfig ({@link ConfigurationKey#DIRECTORY_CONFIG}) <br />
-	 * Eigenschaften: {@link AbstractConfiguration#()}
-	 * @author schmitzhermes
+	 * Eigenschaften: {@link AbstractConfiguration#getDirectoryConfig()}
 	 *
 	 */
 	public static enum DirectoryConfig {

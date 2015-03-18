@@ -1,10 +1,15 @@
 package de.twitter4serioussearch;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.Directory;
 
 import twitter4j.TwitterStream;
+import de.twitter4serioussearch.common.FieldNames;
+import de.twitter4serioussearch.search.Searcher;
 
 public class Twitter4Serioussearch {
 
@@ -14,7 +19,7 @@ public class Twitter4Serioussearch {
 	private Directory currentDirectory;
 	private TweetHolder tweetHolder;
 	private IdGenerator idGenerator;
-
+	private Searcher searcher;
 
 	/**
 	 * Registriert einen {@link de.twitter4serioussearch.TweetListener
@@ -34,7 +39,11 @@ public class Twitter4Serioussearch {
 			TweetListener actionListener) {
 		query = StringUtils.join(Tokenizer.getTokensForString(query), " ");
 		keywordHolder.registerQuery(query, sessionId, actionListener);
-		// TODO in persitenten Suchen
+		List<Document> documents = searcher.searchForTweets(query);
+		for (Document document : documents) {
+			actionListener.handleNewTweet(tweetHolder.getTweets().get(
+					Integer.parseInt(document.get(FieldNames.ID.getField()))));
+		}
 	}
 
 	/**
@@ -68,7 +77,7 @@ public class Twitter4Serioussearch {
 	void setTwitterStream(TwitterStream twitterStream) {
 		this.twitterStream = twitterStream;
 	}
-	
+
 	@Override
 	protected void finalize() throws Throwable {
 		twitterStream.clearListeners();
@@ -116,5 +125,13 @@ public class Twitter4Serioussearch {
 
 	public void setIdGenerator(IdGenerator idGenerator) {
 		this.idGenerator = idGenerator;
+	}
+
+	public Searcher getSearcher() {
+		return searcher;
+	}
+
+	public void setSearcher(Searcher searcher) {
+		this.searcher = searcher;
 	}
 }

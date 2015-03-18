@@ -3,9 +3,12 @@ package de.twitter4serioussearch.configuration.management;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.queryparser.classic.QueryParser.Operator;
 
 import de.twitter4serioussearch.configuration.ConfigurationHolder;
 import de.twitter4serioussearch.configuration.management.ConfigurationValues.DirectoryConfig;
@@ -25,8 +28,6 @@ import de.twitter4serioussearch.configuration.management.ConfigurationValues.Str
 public class ConfigurationFactory {
 	public static final String PROPERTY_FILE = "twitter4serioussearch.properties";
 
-	private static Properties properties = new Properties();
-
 	private static Logger log = Logger.getLogger(ConfigurationFactory.class);
 
 	private ConfigurationFactory() {
@@ -40,36 +41,26 @@ public class ConfigurationFactory {
 	 */
 	public static void createConfiguration() {
 		AbstractConfiguration config = new DefaultConfiguration();
-		readConfigurationFromFile(config);
+		updateConfiguration(config, readConfigurationFromFile(config));
 		ConfigurationHolder.setConfiguration(config); // sets the configuration in the holder -> the API can access it now
 	}
-
+	
 	/**
-	 * Liest die Konfiguration aus der Properties-File ({@link #PROPERTY_FILE})
-	 * und passt die übergebene Konfiguration entsprechend an.
-	 * (Call-by-reference)
+	 * Erstellt die Konfiguration anhand einer übergebenen Map.
 	 * 
-	 * @param config
-	 *            die Konfiguration vor dem Einlesen der Properties-File (
-	 *            {@link #PROPERTY_FILE})
+	 * @return die Konfiguration anhand der Standardkonfiguration und den in der
+	 *         Property-File ({@link #PROPERTY_FILE}) überschriebenen Werten.
 	 */
-	private static void readConfigurationFromFile(AbstractConfiguration config) {
-		InputStream inputStream = ConfigurationFactory.class.getClassLoader()
-				.getResourceAsStream(PROPERTY_FILE);
-
-		if (inputStream != null) {
-			try {
-				properties.load(inputStream);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		// TODO ordentlich machen
-		// TODO unknown property -> log error
+	public static void createConfiguration(Map<String, String> properties) {
+		AbstractConfiguration config = new DefaultConfiguration();
+		updateConfiguration(config, properties);
+		ConfigurationHolder.setConfiguration(config); // sets the configuration in the holder -> the API can access it now
+	}
+	
+	private static void updateConfiguration(AbstractConfiguration config, Map<String, String> properties) {
 		String value;
 		Integer modifiedProperties = 0;
-		if ((value = properties.getProperty(ConfigurationKey.STREAM_CONFIG)) != null) {
+		if ((value = properties.get(ConfigurationKey.STREAM_CONFIG)) != null) {
 			try {
 				config.setStreamConfig(StreamConfig.valueOf(StreamConfig.class,
 						value));
@@ -81,7 +72,7 @@ public class ConfigurationFactory {
 			}
 		}
 
-		if ((value = properties.getProperty(ConfigurationKey.DIRECTORY_CONFIG)) != null) {
+		if ((value = properties.get(ConfigurationKey.DIRECTORY_CONFIG)) != null) {
 			try {
 				config.setDirectoryConfig(DirectoryConfig.valueOf(
 						DirectoryConfig.class, value));
@@ -93,7 +84,7 @@ public class ConfigurationFactory {
 			}
 		}
 
-		if ((value = properties.getProperty(ConfigurationKey.DIRECTORY)) != null) {
+		if ((value = properties.get(ConfigurationKey.DIRECTORY)) != null) {
 			if (config.getDirectoryConfig() != DirectoryConfig.FS_DIRECTORY) {
 				log.warn("You are trying to set an explicit directory for Lucene, but it seems that your configuration uses the RAM directory. The configuration value will be ignored.");
 			}
@@ -102,13 +93,25 @@ public class ConfigurationFactory {
 			modifiedProperties++;
 		}
 		
-		if ((value = properties.getProperty(ConfigurationKey.MAX_NUM_TWEETS)) != null) {
+		if ((value = properties.get(ConfigurationKey.MAX_NUM_TWEETS)) != null) {
 			log.trace(ConfigurationKey.MAX_NUM_TWEETS + ": " + value);
 			try {
 				config.setMaxNumberTweets(Integer.parseInt(value));
+				modifiedProperties++;
 			} catch(NumberFormatException e) {
 				log.error("You tried to set the maximum number of tweets, but the key was not a number. Please only assign numbers to this property.", e);
 			}
+		}
+		
+		if ((value = properties.get(ConfigurationKey.DEFAULT_OPERATOR)) != null) {
+			try {
+				config.setDefaultOperator(Operator.valueOf(Operator.class, value));
+				log.trace(ConfigurationKey.DEFAULT_OPERATOR + ": " + value);
+				modifiedProperties++;
+			} catch (IllegalArgumentException e) {
+				throw buildConfigValueException(value, Operator.class, ConfigurationKey.DEFAULT_OPERATOR, e);
+			}
+
 		}
 
 		if (modifiedProperties != properties.size()) {
@@ -118,6 +121,31 @@ public class ConfigurationFactory {
 					+ properties.size()
 					+ " properties. It seems as if you were trying to set another property, which was ignored because it is not known by the system. Check your properties-file in case something does not work as expected.");
 		}
+	}
+
+	/**
+	 * Liest die Konfiguration aus der Properties-File ({@link #PROPERTY_FILE})
+	 * und passt die übergebene Konfiguration entsprechend an.
+	 * (Call-by-reference)
+	 * 
+	 * @param config
+	 *            die Konfiguration vor dem Einlesen der Properties-File (
+	 *            {@link #PROPERTY_FILE})
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private static Map<String, String> readConfigurationFromFile(AbstractConfiguration config) {
+		Properties properties = new Properties();
+		InputStream inputStream = ConfigurationFactory.class.getClassLoader()
+				.getResourceAsStream(PROPERTY_FILE);
+
+		if (inputStream != null) {
+			try {
+				properties.load(inputStream);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return new HashMap<String, String>((Map) properties);
 	}
 
 	/**

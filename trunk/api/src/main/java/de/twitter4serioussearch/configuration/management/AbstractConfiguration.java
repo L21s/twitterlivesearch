@@ -1,5 +1,7 @@
 package de.twitter4serioussearch.configuration.management;
 
+import org.apache.lucene.queryparser.classic.QueryParser.Operator;
+
 import de.twitter4serioussearch.configuration.management.ConfigurationValues.DirectoryConfig;
 import de.twitter4serioussearch.configuration.management.ConfigurationValues.StreamConfig;
 
@@ -43,7 +45,15 @@ public abstract class AbstractConfiguration {
 	 * <b>Property-Values:</b> Zahl
 	 * <b>Default:</b> 50000
 	 */
-	private Integer maxNumberTweets;
+	private Integer maxNumberTweets; // TODO besser: maxNumberOfTweets
+	
+	/**
+	 * The default operator which is used to connect tokens in query string. <br /> <br />
+	 * <b>Property-Key:</b> twitter4serioussearch.defaultOperator (siehe: {@link ConfigurationKey#DEFAULT_OPERATOR}) <br />
+	 * <b>Property-Values:</b> <em>AND</em> | OR
+	 * <b>Default:</b> AND
+	 */
+	private Operator defaultOperator;
 
 	/**
 	 * @return Aktuelle StreamConfig
@@ -79,6 +89,14 @@ public abstract class AbstractConfiguration {
 
 	void setMaxNumberTweets(Integer maxNumberTweets) {
 		this.maxNumberTweets = maxNumberTweets;
+	}
+
+	public Operator getDefaultOperator() {
+		return defaultOperator;
+	}
+
+	public void setDefaultOperator(Operator defaultOperator) {
+		this.defaultOperator = defaultOperator;
 	}
 
 }

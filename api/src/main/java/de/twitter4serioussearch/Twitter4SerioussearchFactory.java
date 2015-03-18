@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
@@ -34,11 +32,9 @@ public class Twitter4SerioussearchFactory {
 			// several important variables are initialized here
 			twitter = new Twitter4Serioussearch();
 			TweetHolder tweetHolder = new TweetHolder();
-			Analyzer analyzer = new WhitespaceAnalyzer();
 			QueryHolder queryHolder = new QueryHolder();
-			IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
+			IndexWriterConfig indexWriterConfig = new IndexWriterConfig(AnalyzerMapping.ANALYZER_FOR_DELIMITER);
 			TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
-			twitter.setTwitterStream(twitterStream); // Referenz auf Twitter4Serioussearch
 			Directory directory;
 			
 			// confguration part: Twitter4Serioussearch is configured here according to the config
@@ -52,11 +48,10 @@ public class Twitter4SerioussearchFactory {
 			IndexWriter iwriter = new IndexWriter(directory, indexWriterConfig);
 			Searcher searcher = new Searcher(directory, queryHolder, tweetHolder);
 			
+			twitterStream.addListener(new TwitterStreamListener(directory, tweetHolder, queryHolder, iwriter, searcher));
 			if(configuration.getStreamConfig() == StreamConfig.USER_STREAM) {
-				twitterStream.addListener(new TwitterStreamListener(directory, analyzer, tweetHolder, queryHolder, iwriter, searcher));
 				twitterStream.user();
 			} else if(configuration.getStreamConfig() == StreamConfig.GARDENHOSE){
-				twitterStream.addListener(null);
 				twitterStream.sample();
 			}
 			
@@ -65,6 +60,8 @@ public class Twitter4SerioussearchFactory {
 			twitter.setIndexWriter(iwriter);
 			twitter.setTweetHolder(tweetHolder);
 			twitter.setKeywordHolder(queryHolder);
+			twitter.setTwitterStream(twitterStream); // Referenz auf Twitter4Serioussearch
+			twitter.setSearcher(searcher);
 			
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -9,6 +9,7 @@ import org.apache.lucene.store.Directory;
 
 import twitter4j.TwitterStream;
 import de.twitter4serioussearch.common.FieldNames;
+import de.twitter4serioussearch.common.Util;
 import de.twitter4serioussearch.search.Searcher;
 
 public class Twitter4Serioussearch {
@@ -40,7 +41,7 @@ public class Twitter4Serioussearch {
 		query = StringUtils.join(Tokenizer.getTokensForString(query), " ");
 		keywordHolder.registerQuery(query, sessionId, actionListener);
 		List<Document> documents = searcher.searchForTweets(query);
-		for (Document document : documents) {
+		for (Document document : Util.safe(documents)) {
 			actionListener.handleNewTweet(tweetHolder.getTweets().get(
 					Integer.parseInt(document.get(FieldNames.ID.getField()))));
 		}

@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.IntField;
@@ -28,16 +27,15 @@ import de.twitter4serioussearch.search.Searcher;
 //TODO rename
 public class TwitterStreamListener implements UserStreamListener, StatusListener {
 	private TweetHolder tweetHolder;
-	private Directory directory;
 	private IndexWriter iwriter;
 	private QueryHolder queryHolder;
 	private Logger log = Logger.getLogger(this.getClass());
 	private Searcher searcher;
 
 	public TwitterStreamListener(Directory directory,
-			Analyzer analyzer, TweetHolder tweetHolder,
+			TweetHolder tweetHolder,
 			QueryHolder queryHolder, IndexWriter iwriter, Searcher searcher) {
-		this.directory = directory;
+		log.info("init");
 		this.tweetHolder = tweetHolder;
 		this.iwriter = iwriter;
 		this.queryHolder = queryHolder;
@@ -46,6 +44,7 @@ public class TwitterStreamListener implements UserStreamListener, StatusListener
 
 	@Override
 	public void onStatus(Status status) {
+		log.info("Incoming Tweet: "  + status.getText());
 		Document doc = new Document();
 		Integer id = IdGenerator.getInstance().getNextId();
 		Integer idToRemove = IdGenerator.getInstance().getIdToRemove();

@@ -41,7 +41,7 @@ public class Searcher {
 		AbstractConfiguration config = ConfigurationHolder.getConfiguration();
 		try {
 			if (!DirectoryReader.indexExists(directory)) {
-
+				return null;
 			}
 		} catch (IOException e) {
 			log.fatal("Error when trying to check if directory exists!", e);

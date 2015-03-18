@@ -5,6 +5,7 @@ import java.util.Map;
 
 import me.champeau.ld.UberLanguageDetector;
 
+import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.de.GermanAnalyzer;
@@ -19,20 +20,28 @@ import org.apache.lucene.analysis.fr.FrenchAnalyzer;
  *
  */
 public class AnalyzerMapping {
-	private static Map<String, Class<? extends Analyzer>> mapping = new HashMap<>();
-	public static String TOKEN_DELIMITER = " ";
-	public static Analyzer ANALYZER_FOR_DELIMITER;
+	private final static Map<String, Class<? extends Analyzer>> mapping = new HashMap<String, Class<? extends Analyzer>>();
+	public final static String TOKEN_DELIMITER = " ";
+	public final static Analyzer ANALYZER_FOR_DELIMITER = new WhitespaceAnalyzer();
+	private final static Map<String, Analyzer> cache = new HashMap<String, Analyzer>();
 
 	static {
-		mapping.put("de", GermanAnalyzer.class);
-		mapping.put("en", EnglishAnalyzer.class);
-		mapping.put("fr", FrenchAnalyzer.class);
-		ANALYZER_FOR_DELIMITER = new WhitespaceAnalyzer();
+		try {
+			Logger log = Logger.getLogger(AnalyzerMapping.class);
+			log.info("hallo1");
+			mapping.put("de", GermanAnalyzer.class);
+			mapping.put("en", EnglishAnalyzer.class);
+			mapping.put("fr", FrenchAnalyzer.class);
+		} catch(Exception e) {
+			System.out.println(e);
+		}
+		
 	}
-
-	private static Map<String, Analyzer> cache = new HashMap<>();
+	
 
 	public static Analyzer getAnalyzerForLanguage(String languageCode) {
+		Logger log = Logger.getLogger(AnalyzerMapping.class);
+		log.info("hallo2");
 		Analyzer analyzer = null;
 		if (cache.get(languageCode) == null) {
 			try {
@@ -43,10 +52,11 @@ public class AnalyzerMapping {
 					analyzer = (Analyzer) Class.forName(
 							GermanAnalyzer.class.getName()).newInstance();
 					cache.put("de", analyzer);
+				} else {
+					analyzer = (Analyzer) Class.forName(
+							mapping.get(languageCode).getName()).newInstance();
+					cache.put(languageCode, analyzer);
 				}
-				analyzer = (Analyzer) Class.forName(
-						mapping.get(languageCode).getName()).newInstance();
-				cache.put(languageCode, analyzer);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {

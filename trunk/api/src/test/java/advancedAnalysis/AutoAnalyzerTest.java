@@ -61,7 +61,7 @@ public class AutoAnalyzerTest extends TestCase {
 
 	@Test
 	public void testAnalyzer() {
-		keywordHolder.putKeyword(
+		keywordHolder.registerQuery(
 				StringUtils.join(Tokenizer.getTokensForString("shoe"), " "),
 				"1", new MyTweetListener());
 		Status status = new Status() {

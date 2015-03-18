@@ -53,16 +53,16 @@ public class Twitter4Serioussearch {
 	public void registerKeyword(String keyword, String sessionId,
 			TweetListener actionListener) {
 		keyword = StringUtils.join(Tokenizer.getTokensForString(keyword), " ");
-		keywordHolder.putKeyword(keyword, sessionId, actionListener);
+		keywordHolder.registerQuery(keyword, sessionId, actionListener);
 		// TODO in persitenten Suchen
 	}
 
 	public void unregisterKeyword(String keyword, String sessionId) {
 		keyword = StringUtils.join(Tokenizer.getTokensForString(keyword), " ");
-		keywordHolder.removeKeyword(keyword, sessionId);
+		keywordHolder.unregisterQuery(keyword, sessionId);
 	}
 
 	public void unregisterSesion(String sessionId) {
-		keywordHolder.removeSession(sessionId);
+		keywordHolder.unregisterSession(sessionId);
 	}
 }

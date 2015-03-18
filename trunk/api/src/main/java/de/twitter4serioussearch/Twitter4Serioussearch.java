@@ -50,19 +50,48 @@ public class Twitter4Serioussearch {
 		super.finalize();
 	}
 
-	public void registerKeyword(String keyword, String sessionId,
+	/**
+	 * Registriert einen {@link de.twitter4serioussearch.TweetListener
+	 * TweetListener} für die Kombination aus Query und Session
+	 *
+	 * @param query
+	 *            Vom User gesuchter String
+	 * @param sessionId
+	 *            eindeutiger Session Identifier (Hintergrund: Die gleiche Query
+	 *            kann von mehreren Usern registriert werden)
+	 * @param actionListener
+	 *            {@link de.twitter4serioussearch.TweetListener TweetListener}
+	 *            der invoked wird, sobald ein zum query passender Tweet
+	 *            empfangen wurde
+	 */
+	public void registerQuery(String query, String sessionId,
 			TweetListener actionListener) {
-		keyword = StringUtils.join(Tokenizer.getTokensForString(keyword), " ");
-		keywordHolder.registerQuery(keyword, sessionId, actionListener);
+		query = StringUtils.join(Tokenizer.getTokensForString(query), " ");
+		keywordHolder.registerQuery(query, sessionId, actionListener);
 		// TODO in persitenten Suchen
 	}
 
-	public void unregisterKeyword(String keyword, String sessionId) {
-		keyword = StringUtils.join(Tokenizer.getTokensForString(keyword), " ");
-		keywordHolder.unregisterQuery(keyword, sessionId);
+	/**
+	 * Deregistriert ein Query für die gegebene Session
+	 *
+	 * @param query
+	 *            zu unregistrierendes Query
+	 * @param sessionId
+	 *            eindeutiger Session Identifier (Hintergrund: Die gleiche Query
+	 *            kann von mehreren Usern registriert werden)
+	 */
+	public void unregisterQuery(String query, String sessionId) {
+		query = StringUtils.join(Tokenizer.getTokensForString(query), " ");
+		keywordHolder.unregisterQuery(query, sessionId);
 	}
 
-	public void unregisterSesion(String sessionId) {
+	/**
+	 * Deregistriert alle querys für eine gegebene session
+	 *
+	 * @param sessionId
+	 *            eindeutiger Session Identifier
+	 */
+	public void unregisterSession(String sessionId) {
 		keywordHolder.unregisterSession(sessionId);
 	}
 }

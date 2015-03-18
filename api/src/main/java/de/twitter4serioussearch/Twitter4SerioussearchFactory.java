@@ -56,6 +56,13 @@ public class Twitter4SerioussearchFactory {
 				twitterStream.sample();
 			}
 			
+			// set everything needed in Twitter4Serioussearch
+			twitter.setCurrentDirectory(directory);
+			twitter.setIdGenerator(idGenerator);
+			twitter.setIndexWriter(iwriter);
+			twitter.setTweetHolder(tweetHolder);
+			twitter.setKeywordHolder(keywordHolder);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

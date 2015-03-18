@@ -77,4 +77,44 @@ public class Twitter4Serioussearch {
 		iwriter.close();
 		super.finalize();
 	}
+
+	public IndexWriter getIndexWriter() {
+		return iwriter;
+	}
+
+	public void setIndexWriter(IndexWriter iwriter) {
+		this.iwriter = iwriter;
+	}
+
+	public KeywordHolder getKeywordHolder() {
+		return keywordHolder;
+	}
+
+	public void setKeywordHolder(KeywordHolder keywordHolder) {
+		this.keywordHolder = keywordHolder;
+	}
+
+	public Directory getCurrentDirectory() {
+		return currentDirectory;
+	}
+
+	public void setCurrentDirectory(Directory currentDirectory) {
+		this.currentDirectory = currentDirectory;
+	}
+
+	public TweetHolder getTweetHolder() {
+		return tweetHolder;
+	}
+
+	public void setTweetHolder(TweetHolder tweetHolder) {
+		this.tweetHolder = tweetHolder;
+	}
+
+	public IdGenerator getIdGenerator() {
+		return idGenerator;
+	}
+
+	public void setIdGenerator(IdGenerator idGenerator) {
+		this.idGenerator = idGenerator;
+	}
 }

@@ -1,4 +1,4 @@
-package search;
+package advancedAnalysis;
 
 import java.io.IOException;
 import java.util.Date;
@@ -29,7 +29,6 @@ import twitter4j.UserMentionEntity;
 import twitter4j.UserStreamListener;
 import twitterTest.de.twittertest.IdGenerator;
 import twitterTest.de.twittertest.KeywordHolder;
-import twitterTest.de.twittertest.MyTweetListener;
 import twitterTest.de.twittertest.MyUserStreamListener;
 import twitterTest.de.twittertest.Tokenizer;
 import twitterTest.de.twittertest.TweetHolder;

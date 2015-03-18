@@ -54,7 +54,6 @@ public class MyUserStreamListener implements UserStreamListener {
 
 	@Override
 	public void onStatus(Status status) {
-		System.out.println("status incoming:" + status.getText());
 		Document doc = new Document();
 		Integer id = idGenerator.getId();
 		tweetHolder.getTweets().put(id.intValue(), status);
@@ -65,7 +64,6 @@ public class MyUserStreamListener implements UserStreamListener {
 		doc.add(new IntField("id", id, Field.Store.YES));
 		String textForDoc = StringUtils.join(Tokenizer.getTokensForString(
 				status.getText(), status.getLang()), " ");
-		System.out.println("textForDoc:" + textForDoc);
 		doc.add(new Field("text", textForDoc, TextField.TYPE_NOT_STORED));
 		try {
 			iwriter.addDocument(doc);
@@ -93,7 +91,6 @@ public class MyUserStreamListener implements UserStreamListener {
 		}
 		IndexSearcher isearcher = new IndexSearcher(ireader);
 		for (String keyword : keywordHolder.getKeywords().keySet()) {
-			System.out.println("keyword:" + keyword);
 			BooleanQuery query = new BooleanQuery();
 			try {
 				text = parser.parse(keyword);
@@ -114,8 +111,6 @@ public class MyUserStreamListener implements UserStreamListener {
 			if (hits != null) {
 				for (int i = 0; i < hits.length; i++) {
 					try {
-						System.out.println("gefunden:"
-								+ isearcher.doc(hits[i].doc).get("id"));
 						for (TweetListener actionListener : keywordHolder
 								.getKeywords().get(keyword).values()) {
 							actionListener.handleNewTweet(tweetHolder

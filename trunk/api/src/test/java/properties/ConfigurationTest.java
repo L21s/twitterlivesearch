@@ -6,9 +6,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import configuration.ConfigurationHolder;
-import configuration.management.AbstractConfiguration;
-import configuration.management.ConfigurationValues;
+import de.twitter4serioussearch.configuration.ConfigurationHolder;
+import de.twitter4serioussearch.configuration.management.AbstractConfiguration;
+import de.twitter4serioussearch.configuration.management.ConfigurationValues;
 
 @RunWith(JUnit4.class)
 public class ConfigurationTest extends TestCase{

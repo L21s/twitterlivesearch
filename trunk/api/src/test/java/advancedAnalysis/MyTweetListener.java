@@ -1,7 +1,7 @@
 package advancedAnalysis;
 
+import de.twitter4serioussearch.TweetListener;
 import twitter4j.Status;
-import twitterTest.de.twittertest.TweetListener;
 
 public class MyTweetListener implements TweetListener {
 

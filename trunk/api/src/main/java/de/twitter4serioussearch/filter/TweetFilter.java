@@ -1,4 +1,4 @@
-package filter;
+package de.twitter4serioussearch.filter;
 
 import twitter4j.Status;
 

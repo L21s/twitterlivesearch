@@ -15,6 +15,11 @@ import org.apache.lucene.store.RAMDirectory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import de.twitter4serioussearch.IdGenerator;
+import de.twitter4serioussearch.KeywordHolder;
+import de.twitter4serioussearch.MyUserStreamListener;
+import de.twitter4serioussearch.Tokenizer;
+import de.twitter4serioussearch.TweetHolder;
 import twitter4j.GeoLocation;
 import twitter4j.HashtagEntity;
 import twitter4j.MediaEntity;
@@ -27,11 +32,6 @@ import twitter4j.URLEntity;
 import twitter4j.User;
 import twitter4j.UserMentionEntity;
 import twitter4j.UserStreamListener;
-import twitterTest.de.twittertest.IdGenerator;
-import twitterTest.de.twittertest.KeywordHolder;
-import twitterTest.de.twittertest.MyUserStreamListener;
-import twitterTest.de.twittertest.Tokenizer;
-import twitterTest.de.twittertest.TweetHolder;
 
 public class AutoAnalyzerTest extends TestCase {
 	private IdGenerator idGenerator;

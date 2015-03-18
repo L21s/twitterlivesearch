@@ -1,4 +1,4 @@
-package configuration.management;
+package de.twitter4serioussearch.configuration.management;
 
 /**
  * Alle Property-Values als statische Enums. <br />

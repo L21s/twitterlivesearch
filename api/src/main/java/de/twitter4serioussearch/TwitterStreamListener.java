@@ -27,7 +27,6 @@ import de.twitter4serioussearch.search.Searcher;
 
 //TODO rename
 public class TwitterStreamListener implements UserStreamListener, StatusListener {
-	private IdGenerator idGenerator;
 	private TweetHolder tweetHolder;
 	private Directory directory;
 	private IndexWriter iwriter;
@@ -35,10 +34,9 @@ public class TwitterStreamListener implements UserStreamListener, StatusListener
 	private Logger log = Logger.getLogger(this.getClass());
 	private Searcher searcher;
 
-	public TwitterStreamListener(IdGenerator idGenerator, Directory directory,
+	public TwitterStreamListener(Directory directory,
 			Analyzer analyzer, TweetHolder tweetHolder,
 			QueryHolder queryHolder, IndexWriter iwriter, Searcher searcher) {
-		this.idGenerator = idGenerator;
 		this.directory = directory;
 		this.tweetHolder = tweetHolder;
 		this.iwriter = iwriter;
@@ -49,8 +47,8 @@ public class TwitterStreamListener implements UserStreamListener, StatusListener
 	@Override
 	public void onStatus(Status status) {
 		Document doc = new Document();
-		Integer id = idGenerator.getNextId();
-		Integer idToRemove = idGenerator.getIdToRemove();
+		Integer id = IdGenerator.getInstance().getNextId();
+		Integer idToRemove = IdGenerator.getInstance().getIdToRemove();
 		// updating the tweet holder which holds all tweet objects
 		tweetHolder.getTweets().put(id.intValue(), status);
 		tweetHolder.getTweets().remove(idToRemove);

@@ -1,4 +1,4 @@
-package twitterTest.de.twittertest;
+package de.twitter4serioussearch;
 
 import java.util.ArrayList;
 import java.util.Collections;

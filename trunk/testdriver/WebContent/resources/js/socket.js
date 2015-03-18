@@ -7,7 +7,7 @@ function onMessage(event) {
 
 
 function addSearchKeyword(query) {
-	var socket = new WebSocket("ws://" + document.location.host + "/twitterStream/tweet");
+	var socket = new WebSocket("ws://" + document.location.host + "/twitter4serioussearch/tweet");
 
 	socket.onmessage = onMessage;
 	socket.onopen = function() {
@@ -32,6 +32,4 @@ function formSubmit() {
 	var form = document.getElementById("formular")
 	var query = form.elements["formular:search"].value;
 	addSearchKeyword(query);
-	//document.getElementById("formular:search").reset();
-
 }

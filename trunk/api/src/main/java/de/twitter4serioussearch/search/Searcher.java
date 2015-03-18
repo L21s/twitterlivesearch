@@ -1,75 +1,84 @@
 package de.twitter4serioussearch.search;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.queryparser.classic.QueryParser.Operator;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.store.Directory;
 
-import de.twitter4serioussearch.TweetListener;
+import de.twitter4serioussearch.AnalyzerMapping;
+import de.twitter4serioussearch.QueryHolder;
+import de.twitter4serioussearch.TweetHolder;
+import de.twitter4serioussearch.common.FieldNames;
 import de.twitter4serioussearch.configuration.ConfigurationHolder;
 import de.twitter4serioussearch.configuration.management.AbstractConfiguration;
 
 public class Searcher {
 	private Logger log = Logger.getLogger(this.getClass());
+	private Directory directory;
+	private QueryHolder queryHolder;
+	private TweetHolder tweetHolder;
 
-	public ScoreDoc[] searchForTweets(Integer id, String text) {
+	public Searcher(Directory directory, QueryHolder queryHolder,
+			TweetHolder tweetHolder) {
+		this.directory = directory;
+		this.queryHolder = queryHolder;
+		this.tweetHolder = tweetHolder;
+	}
+
+	public List<Document> searchForTweets(Integer id, String text) {
 		AbstractConfiguration config = ConfigurationHolder.getConfiguration();
 		try {
-			if (!DirectoryReader.indexExists(config.getD)) {
-				return new ScoreDoc[] {};
+			if (!DirectoryReader.indexExists(directory)) {
+
 			}
-		} catch (IOException e3) {
-			e3.printStackTrace();
+		} catch (IOException e) {
+			log.fatal("Error when trying to check if directory exists!", e);
+			return new ScoreDoc[] {};
 		}
 		DirectoryReader ireader;
 		try {
 			ireader = DirectoryReader.open(directory);
-		} catch (IOException e2) {
-			ireader = null;
-			e2.printStackTrace();
+		} catch (IOException e) {
+			log.fatal("Error when trying to open directory!", e);
+			return new ScoreDoc[] {};
 		}
 		IndexSearcher isearcher = new IndexSearcher(ireader);
 		Query textQuery = null;
-		Query idQuery = null;
-		QueryParser parser = new QueryParser("text", analyzer);
-		parser.setDefaultOperator(Operator.AND);
-		for (String keyword : keywordHolder.getQueries().keySet()) {
-			BooleanQuery query = new BooleanQuery();
-			try {
-				textQuery = parser.parse(keyword);
-				id.intValue(), true, true);
-			} catch (ParseException e) {
-				log.fatal("Error while parsing query: "+keyword,e);
-			}
-			idQuery = NumericRangeQuery.newIntRange("id", id.intValue(),
-					query.add(idQuery, Occur.MUST);
-			query.add(text, Occur.MUST);
-			ScoreDoc[] hits = null;
-			try {
-				hits = isearcher.search(query, 1000).scoreDocs;
-			} catch (IOException e1) {
-				log.fatal("Error while trying to search!", e1);
-			}
-			if (hits != null) {
-				for (int i = 0; i < hits.length; i++) {
-					for (TweetListener actionListener : keywordHolder
-							.getKeywords().get(keyword).values()) {
-						actionListener.handleNewTweet(tweetHolder.getTweets()
-								.get(Integer.parseInt(isearcher
-										.doc(hits[i].doc).get("id"))));
-					}
-				}
-			}
+		QueryParser parser = new QueryParser(FieldNames.TEXT.getField(),
+				AnalyzerMapping.ANALYZER_FOR_DELIMITER);
+		parser.setDefaultOperator(config.getDefaultOperator());
+		BooleanQuery query = new BooleanQuery();
+		try {
+			textQuery = parser.parse(text);
+		} catch (ParseException e) {
+			log.fatal("Error while parsing query: " + text, e);
 		}
+		if (id != null) {
+			Query idQuery = NumericRangeQuery.newIntRange(
+					FieldNames.ID.getField(), id.intValue(), id.intValue(),
+					true, true);
+			query.add(idQuery, Occur.MUST);
+		}
+		query.add(textQuery, Occur.MUST);
+		ScoreDoc[] hits = null;
+		try {
+			hits = isearcher.search(query, 1000).scoreDocs;
+		} catch (IOException e) {
+			log.fatal("Error while trying to search!", e);
+		}
+		return hits == null ? new ScoreDoc[] {} : hits;
+		isearcher.doc(hits[0].doc)
 	}
 
 	public ScoreDoc[] searchForTweets(String text) {

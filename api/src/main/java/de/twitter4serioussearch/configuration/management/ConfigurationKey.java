@@ -14,5 +14,7 @@ public class ConfigurationKey {
 	
 	public static final String DIRECTORY = PREFIX + "directory";
 	
-	public static final String MAX_NUM_TWEETS = PREFIX + "maxNumberTweets";
+	public static final String MAX_NUM_TWEETS = PREFIX + "maxNumberOfTweets";
+	
+	public static final String DEFAULT_OPERATOR = PREFIX + "defaultOperator";
 }

@@ -1,5 +1,7 @@
 package de.twitter4serioussearch.configuration.management;
 
+import org.apache.lucene.queryparser.classic.QueryParser.Operator;
+
 import de.twitter4serioussearch.configuration.management.ConfigurationValues.DirectoryConfig;
 import de.twitter4serioussearch.configuration.management.ConfigurationValues.StreamConfig;
 
@@ -14,5 +16,6 @@ public class DefaultConfiguration extends AbstractConfiguration{
 		setDirectoryConfig(DirectoryConfig.RAM);
 		setDirectory("/var/lucene/index");
 		setMaxNumberTweets(50000);
+		setDefaultOperator(Operator.AND);
 	}
 }

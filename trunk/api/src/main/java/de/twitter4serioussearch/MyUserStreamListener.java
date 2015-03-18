@@ -51,7 +51,7 @@ public class MyUserStreamListener implements UserStreamListener {
 	@Override
 	public void onStatus(Status status) {
 		Document doc = new Document();
-		Integer id = idGenerator.getId();
+		Integer id = idGenerator.getNextId();
 		tweetHolder.getTweets().put(id.intValue(), status);
 		doc.add(new IntField("id", id, Field.Store.YES));
 		String textForDoc = StringUtils.join(Tokenizer.getTokensForString(

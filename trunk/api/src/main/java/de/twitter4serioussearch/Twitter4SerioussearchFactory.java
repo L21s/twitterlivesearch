@@ -19,6 +19,7 @@ import de.twitter4serioussearch.configuration.management.AbstractConfiguration;
 import de.twitter4serioussearch.configuration.management.ConfigurationFactory;
 import de.twitter4serioussearch.configuration.management.ConfigurationValues.DirectoryConfig;
 import de.twitter4serioussearch.configuration.management.ConfigurationValues.StreamConfig;
+import de.twitter4serioussearch.search.Searcher;
 
 public class Twitter4SerioussearchFactory {
 	private static Logger log = Logger.getLogger(Twitter4SerioussearchFactory.class);
@@ -26,18 +27,21 @@ public class Twitter4SerioussearchFactory {
 	public static Twitter4Serioussearch build() {
 		Twitter4Serioussearch twitter = null;
 		try {
+			// Load configuration
 			ConfigurationFactory.createConfiguration();
 			AbstractConfiguration configuration = ConfigurationHolder.getConfiguration();
+			
+			// several important variables are initialized here
 			twitter = new Twitter4Serioussearch();
-			IdGenerator idGenerator = new IdGenerator(configuration.getMaxNumberTweets());
 			TweetHolder tweetHolder = new TweetHolder();
 			Analyzer analyzer = new WhitespaceAnalyzer();
-			QueryHolder keywordHolder = new QueryHolder();
+			QueryHolder queryHolder = new QueryHolder();
 			IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
 			TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
 			twitter.setTwitterStream(twitterStream); // Referenz auf Twitter4Serioussearch
 			Directory directory;
 			
+			// confguration part: Twitter4Serioussearch is configured here according to the config
 			if(configuration.getDirectoryConfig() == DirectoryConfig.RAM) {
 				 directory = new RAMDirectory();
 				 log.trace("initialized RAM-Directory");
@@ -46,10 +50,10 @@ public class Twitter4SerioussearchFactory {
 				log.trace("initialized FS-Directory on path " + configuration.getDirectory());
 			}
 			IndexWriter iwriter = new IndexWriter(directory, indexWriterConfig);
+			Searcher searcher = new Searcher(directory, queryHolder, tweetHolder);
 			
 			if(configuration.getStreamConfig() == StreamConfig.USER_STREAM) {
-				twitterStream.addListener(new MyUserStreamListener(idGenerator,
-						directory, analyzer, tweetHolder, keywordHolder, iwriter));
+				twitterStream.addListener(new TwitterStreamListener(directory, analyzer, tweetHolder, queryHolder, iwriter, searcher));
 				twitterStream.user();
 			} else if(configuration.getStreamConfig() == StreamConfig.GARDENHOSE){
 				twitterStream.addListener(null);
@@ -58,10 +62,9 @@ public class Twitter4SerioussearchFactory {
 			
 			// set everything needed in Twitter4Serioussearch
 			twitter.setCurrentDirectory(directory);
-			twitter.setIdGenerator(idGenerator);
 			twitter.setIndexWriter(iwriter);
 			twitter.setTweetHolder(tweetHolder);
-			twitter.setKeywordHolder(keywordHolder);
+			twitter.setKeywordHolder(queryHolder);
 			
 		} catch (IOException e) {
 			e.printStackTrace();

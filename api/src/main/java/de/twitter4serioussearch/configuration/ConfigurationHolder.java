@@ -6,12 +6,21 @@ import de.twitter4serioussearch.configuration.management.AbstractConfiguration;
 
 
 public class ConfigurationHolder {
+	/**
+	 * the current configuration
+	 */
 	private AbstractConfiguration currentConfiguration;
 	
+	/**
+	 * the instance of this holder
+	 */
 	private static ConfigurationHolder instance;
 	
 	private static Logger log = Logger.getLogger(ConfigurationHolder.class);
 	
+	/** 
+	 * private due to singleton pattern
+	 */
 	private ConfigurationHolder() {}
 	
 	
@@ -21,7 +30,7 @@ public class ConfigurationHolder {
 	 */
 	public static AbstractConfiguration getConfiguration() {
 		if(instance == null) {
-			IllegalStateException e = new IllegalStateException("There is no instance of the holder yet. You have to instantiate the logger first.");
+			IllegalStateException e = new IllegalStateException("There is no instance of the holder yet. You have to instantiate the holder first.");
 			log.error("There is no instance of the holder yet. You have to instantiate the logger first.", e);
 			throw e;
 		}

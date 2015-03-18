@@ -5,79 +5,151 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
+import de.twitter4serioussearch.configuration.ConfigurationHolder;
+import de.twitter4serioussearch.configuration.management.ConfigurationValues.DirectoryConfig;
 import de.twitter4serioussearch.configuration.management.ConfigurationValues.StreamConfig;
 
 /**
- * Kreiert eine Konfiguration anhand einer Default-Konfiguration und der Properties-File. Die Properties-File muss den Namen <em>twitter4serioussearch.properties</em> (siehe: {@link #PROPERTY_FILE}). <br/>
- * Es existiert eine Standardkonfiguration ({@link DefaultConfiguration}), deren Werte überschrieben werden, wenn eine entsprechende Property in der Property-File existiert.
+ * Kreiert eine Konfiguration anhand einer Default-Konfiguration und der
+ * Properties-File. Die Properties-File muss den Namen
+ * <em>twitter4serioussearch.properties</em> (siehe: {@link #PROPERTY_FILE}). <br/>
+ * Es existiert eine Standardkonfiguration ({@link DefaultConfiguration}), deren
+ * Werte überschrieben werden, wenn eine entsprechende Property in der
+ * Property-File existiert.
+ * 
  * @author schmitzhermes
  *
  */
 public class ConfigurationFactory {
 	public static final String PROPERTY_FILE = "twitter4serioussearch.properties";
-	
+
 	private static Properties properties = new Properties();
-	
-	private ConfigurationFactory() {}
-	
+
+	private static Logger log = Logger.getLogger(ConfigurationFactory.class);
+
+	private ConfigurationFactory() {
+	}
+
 	/**
-	 * Erstellt die Konfiguration. 
-	 * @return die Konfiguration anhand der Standardkonfiguration und den in der Property-File ({@link #PROPERTY_FILE}) überschriebenen Werten.
+	 * Erstellt die Konfiguration.
+	 * 
+	 * @return die Konfiguration anhand der Standardkonfiguration und den in der
+	 *         Property-File ({@link #PROPERTY_FILE}) überschriebenen Werten.
 	 */
-	public static AbstractConfiguration createConfiguration() {
+	public static void createConfiguration() {
 		AbstractConfiguration config = new DefaultConfiguration();
 		readConfigurationFromFile(config);
-		
-		return config;
+		ConfigurationHolder.setConfiguration(config); // sets the configuration in the holder -> the API can access it now
 	}
-	
+
 	/**
-	 * Liest die Konfiguration aus der Properties-File ({@link #PROPERTY_FILE}) und passt die übergebene Konfiguration entsprechend an. (Call-by-reference)
-	 * @param config die Konfiguration vor dem Einlesen der Properties-File ({@link #PROPERTY_FILE})
+	 * Liest die Konfiguration aus der Properties-File ({@link #PROPERTY_FILE})
+	 * und passt die übergebene Konfiguration entsprechend an.
+	 * (Call-by-reference)
+	 * 
+	 * @param config
+	 *            die Konfiguration vor dem Einlesen der Properties-File (
+	 *            {@link #PROPERTY_FILE})
 	 */
 	private static void readConfigurationFromFile(AbstractConfiguration config) {
-		InputStream inputStream = ConfigurationFactory.class.getClassLoader().getResourceAsStream(PROPERTY_FILE);
-		
-		if(inputStream != null) {
+		InputStream inputStream = ConfigurationFactory.class.getClassLoader()
+				.getResourceAsStream(PROPERTY_FILE);
+
+		if (inputStream != null) {
 			try {
 				properties.load(inputStream);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		
+
 		// TODO ordentlich machen
 		// TODO unknown property -> log error
-		String streamConfig;
-		if((streamConfig = properties.getProperty(ConfigurationKey.STREAM_CONFIG)) != null) {
+		String value;
+		Integer modifiedProperties = 0;
+		if ((value = properties.getProperty(ConfigurationKey.STREAM_CONFIG)) != null) {
 			try {
-				config.setStreamConfig(StreamConfig.valueOf(StreamConfig.class, streamConfig));
-			} catch(IllegalArgumentException e) {
-				throw buildConfigValueException(streamConfig, StreamConfig.class, ConfigurationKey.STREAM_CONFIG, e);
+				config.setStreamConfig(StreamConfig.valueOf(StreamConfig.class,
+						value));
+				log.trace(ConfigurationKey.STREAM_CONFIG + ": " + value);
+				modifiedProperties++;
+			} catch (IllegalArgumentException e) {
+				throw buildConfigValueException(value, StreamConfig.class,
+						ConfigurationKey.STREAM_CONFIG, e);
 			}
-		} 
+		}
+
+		if ((value = properties.getProperty(ConfigurationKey.DIRECTORY_CONFIG)) != null) {
+			try {
+				config.setDirectoryConfig(DirectoryConfig.valueOf(
+						DirectoryConfig.class, value));
+				log.trace(ConfigurationKey.DIRECTORY_CONFIG + ": " + value);
+				modifiedProperties++;
+			} catch (IllegalArgumentException e) {
+				throw buildConfigValueException(value, DirectoryConfig.class,
+						ConfigurationKey.DIRECTORY_CONFIG, e);
+			}
+		}
+
+		if ((value = properties.getProperty(ConfigurationKey.DIRECTORY)) != null) {
+			if (config.getDirectoryConfig() != DirectoryConfig.FS_DIRECTORY) {
+				log.warn("You are trying to set an explicit directory for Lucene, but it seems that your configuration uses the RAM directory. The configuration value will be ignored.");
+			}
+			log.trace(ConfigurationKey.DIRECTORY + ": " + value);
+			config.setDirectory(value);
+			modifiedProperties++;
+		}
+		
+		if ((value = properties.getProperty(ConfigurationKey.MAX_NUM_TWEETS)) != null) {
+			log.trace(ConfigurationKey.MAX_NUM_TWEETS + ": " + value);
+			try {
+				config.setMaxNumberTweets(Integer.parseInt(value));
+			} catch(NumberFormatException e) {
+				log.error("You tried to set the maximum number of tweets, but the key was not a number. Please only assign numbers to this property.", e);
+			}
+		}
+
+		if (modifiedProperties != properties.size()) {
+			log.warn("You have only modified "
+					+ modifiedProperties
+					+ " properties, but your Properties-File contains "
+					+ properties.size()
+					+ " properties. It seems as if you were trying to set another property, which was ignored because it is not known by the system. Check your properties-file in case something does not work as expected.");
+		}
 	}
-	 
+
 	/**
 	 * Erstellt eine sprechende Konfigurationsexception.
-	 * @param actualValue die vom Nutzer eingetragene Value
-	 * @param valueEnum das Enum der zulässigen Values
-	 * @param property die betreffende Property
-	 * @param root-cause der Exception (hier häufig {@link IllegalArgumentException}, da ein Enum eine solche Exception wirft, falls .valueOf keinen entsprechendne Wert findet.
+	 * 
+	 * @param actualValue
+	 *            die vom Nutzer eingetragene Value
+	 * @param valueEnum
+	 *            das Enum der zulässigen Values
+	 * @param property
+	 *            die betreffende Property
+	 * @param root
+	 *            -cause der Exception (hier häufig
+	 *            {@link IllegalArgumentException}, da ein Enum eine solche
+	 *            Exception wirft, falls .valueOf keinen entsprechendne Wert
+	 *            findet.
 	 * @return
 	 */
-	private static ConfigurationException buildConfigValueException(String actualValue, Class<? extends Enum<?>> valueEnum, String property, Throwable cause) {
+	private static ConfigurationException buildConfigValueException(
+			String actualValue, Class<? extends Enum<?>> valueEnum,
+			String property, Throwable cause) {
 		StringBuilder s = new StringBuilder();
 		s.append("The value ");
 		s.append(actualValue);
 		s.append(" of the property ");
 		s.append(property);
 		s.append(" is not valid. ");
-		
+
 		s.append("Valid properties are: ");
 		s.append(Arrays.toString(valueEnum.getEnumConstants()));
-		
+
+		log.error(s.toString(), cause);
 		return new ConfigurationException(s.toString(), cause);
 	}
 }
-

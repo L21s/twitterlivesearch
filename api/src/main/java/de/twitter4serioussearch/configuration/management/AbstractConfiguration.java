@@ -36,6 +36,14 @@ public abstract class AbstractConfiguration {
 	 * <b>Default:</b> /var/lucene/index
 	 */
 	private String directory;
+	
+	/**
+	 * Die maximale Anzahl von Tweets die im Buffer vorgehalten werden soll. <br /> <br />
+	 * <b>Property-Key:</b> twitter4serioussearch.maxNumberTweets (siehe: {@link ConfigurationKey#MAX_NUM_TWEETS}) <br />
+	 * <b>Property-Values:</b> Zahl
+	 * <b>Default:</b> 50000
+	 */
+	private Integer maxNumberTweets;
 
 	/**
 	 * @return Aktuelle StreamConfig
@@ -63,6 +71,14 @@ public abstract class AbstractConfiguration {
 
 	void setDirectory(String directory) {
 		this.directory = directory;
+	}
+
+	public Integer getMaxNumberTweets() {
+		return maxNumberTweets;
+	}
+
+	void setMaxNumberTweets(Integer maxNumberTweets) {
+		this.maxNumberTweets = maxNumberTweets;
 	}
 
 }

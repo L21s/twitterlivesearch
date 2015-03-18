@@ -13,4 +13,6 @@ public class ConfigurationKey {
 	public static final String DIRECTORY_CONFIG = PREFIX + "directoryConfig";
 	
 	public static final String DIRECTORY = PREFIX + "directory";
+	
+	public static final String MAX_NUM_TWEETS = PREFIX + "maxNumberTweets";
 }

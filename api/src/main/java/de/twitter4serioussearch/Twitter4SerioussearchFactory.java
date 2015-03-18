@@ -32,7 +32,7 @@ public class Twitter4SerioussearchFactory {
 			IdGenerator idGenerator = new IdGenerator(configuration.getMaxNumberTweets());
 			TweetHolder tweetHolder = new TweetHolder();
 			Analyzer analyzer = new WhitespaceAnalyzer();
-			KeywordHolder keywordHolder = new KeywordHolder();
+			QueryHolder keywordHolder = new QueryHolder();
 			IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
 			TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
 			twitter.setTwitterStream(twitterStream); // Referenz auf Twitter4Serioussearch

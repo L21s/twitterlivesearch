@@ -9,7 +9,7 @@ import twitter4j.TwitterStream;
 public class Twitter4Serioussearch {
 
 	private IndexWriter iwriter;
-	private KeywordHolder keywordHolder;
+	private QueryHolder keywordHolder;
 	private TwitterStream twitterStream;
 	private Directory currentDirectory;
 	private TweetHolder tweetHolder;
@@ -86,11 +86,11 @@ public class Twitter4Serioussearch {
 		this.iwriter = iwriter;
 	}
 
-	public KeywordHolder getKeywordHolder() {
+	public QueryHolder getKeywordHolder() {
 		return keywordHolder;
 	}
 
-	public void setKeywordHolder(KeywordHolder keywordHolder) {
+	public void setKeywordHolder(QueryHolder keywordHolder) {
 		this.keywordHolder = keywordHolder;
 	}
 

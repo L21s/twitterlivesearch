@@ -35,11 +35,11 @@ public class MyUserStreamListener implements UserStreamListener {
 	private TweetHolder tweetHolder;
 	private Directory directory;
 	private IndexWriter iwriter;
-	private KeywordHolder keywordHolder;
+	private QueryHolder keywordHolder;
 
 	public MyUserStreamListener(IdGenerator idGenerator, Directory directory,
 			Analyzer analyzer, TweetHolder tweetHolder,
-			KeywordHolder keywordHolder, IndexWriter iwriter) {
+			QueryHolder keywordHolder, IndexWriter iwriter) {
 		this.idGenerator = idGenerator;
 		this.directory = directory;
 		this.analyzer = analyzer;
@@ -82,7 +82,7 @@ public class MyUserStreamListener implements UserStreamListener {
 			e2.printStackTrace();
 		}
 		IndexSearcher isearcher = new IndexSearcher(ireader);
-		for (String keyword : keywordHolder.getKeywords().keySet()) {
+		for (String keyword : keywordHolder.getQueries().keySet()) {
 			BooleanQuery query = new BooleanQuery();
 			try {
 				text = parser.parse(keyword);
@@ -104,7 +104,7 @@ public class MyUserStreamListener implements UserStreamListener {
 				for (int i = 0; i < hits.length; i++) {
 					try {
 						for (TweetListener actionListener : keywordHolder
-								.getKeywords().get(keyword).values()) {
+								.getQueries().get(keyword).values()) {
 							actionListener.handleNewTweet(tweetHolder
 									.getTweets().get(
 											Integer.parseInt(isearcher.doc(

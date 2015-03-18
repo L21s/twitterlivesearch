@@ -35,25 +35,44 @@ public class ConfigurationFactory {
 	}
 
 	/**
-	 * Erstellt die Konfiguration.
+	 * Erstellt die Standardkonfiguration. Werte, die in der Property-File angegeben werden, werden überschrieben.
 	 * 
 	 * @return die Konfiguration anhand der Standardkonfiguration und den in der
 	 *         Property-File ({@link #PROPERTY_FILE}) überschriebenen Werten.
 	 */
 	public static void createConfiguration() {
-		AbstractConfiguration config = new DefaultConfiguration();
-		updateConfiguration(config, readConfigurationFromFile(config));
-		ConfigurationHolder.setConfiguration(config); // sets the configuration in the holder -> the API can access it now
+		AbstractConfiguration defaultConfig = new DefaultConfiguration();
+		createConfiguration(readConfigurationFromFile(defaultConfig), defaultConfig);
 	}
 	
 	/**
-	 * Erstellt die Konfiguration anhand einer übergebenen Map.
+	 * Erstellt die Standardkonfiguration. Werte, die in der HashMap übergeben werden, werden überschrieben.
 	 * 
 	 * @return die Konfiguration anhand der Standardkonfiguration und den in der
 	 *         Property-File ({@link #PROPERTY_FILE}) überschriebenen Werten.
 	 */
 	public static void createConfiguration(Map<String, String> properties) {
-		AbstractConfiguration config = new DefaultConfiguration();
+		AbstractConfiguration defaultConfig = new DefaultConfiguration();
+		createConfiguration(properties, defaultConfig);
+	}
+	
+	/**
+	 * Erstellt eine eigene Konfiguration. Werte, die in der HashMap übergeben werden, werden überschrieben.
+	 * 
+	 * @return die Konfiguration anhand der Standardkonfiguration und den in der
+	 *         Property-File ({@link #PROPERTY_FILE}) überschriebenen Werten.
+	 */
+	public static void createConfiguration(AbstractConfiguration config) {
+		createConfiguration(readConfigurationFromFile(config), config);
+	}
+	
+	/**
+	 * Erstellt die Konfiguration anhand einer übergebenen Map und einer eigenen Standardkonfiguration.
+	 * 
+	 * @return die Konfiguration anhand der Standardkonfiguration und den in der
+	 *         Property-File ({@link #PROPERTY_FILE}) überschriebenen Werten.
+	 */
+	public static void createConfiguration(Map<String, String> properties, AbstractConfiguration config) {
 		updateConfiguration(config, properties);
 		ConfigurationHolder.setConfiguration(config); // sets the configuration in the holder -> the API can access it now
 	}

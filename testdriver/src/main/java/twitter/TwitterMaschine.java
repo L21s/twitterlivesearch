@@ -1,6 +1,5 @@
 package twitter;
 
-import java.io.IOException;
 import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
@@ -10,7 +9,8 @@ import javax.json.JsonObject;
 import javax.json.spi.JsonProvider;
 
 import twitter4j.Status;
-import twitterTest.de.twittertest.Twitter4Serioussearch;
+import de.twitter4serioussearch.Twitter4Serioussearch;
+import de.twitter4serioussearch.Twitter4SerioussearchFactory;
 
 @Singleton
 public class TwitterMaschine implements Serializable{
@@ -18,15 +18,12 @@ public class TwitterMaschine implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 5748078495621149611L;
-	private Twitter4Serioussearch twitter;
 	
+	private Twitter4Serioussearch twitter;
 	@PostConstruct
 	public void init() {
-		try {
-			this.setTwitter(new Twitter4Serioussearch());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		setTwitter(Twitter4SerioussearchFactory.build());
+
 	}
 	
 	@PreDestroy
@@ -34,13 +31,6 @@ public class TwitterMaschine implements Serializable{
 		
 	}
 
-	public Twitter4Serioussearch getTwitter() {
-		return twitter;
-	}
-
-	public void setTwitter(Twitter4Serioussearch twitter) {
-		this.twitter = twitter;
-	}
 	
 	 public static JsonObject createTweetMessage(Status tweet) {
 	        JsonProvider provider = JsonProvider.provider();
@@ -50,4 +40,12 @@ public class TwitterMaschine implements Serializable{
 	                .build();
 	        return addMessage;
 	    }
+
+	public Twitter4Serioussearch getTwitter() {
+		return twitter;
+	}
+
+	public void setTwitter(Twitter4Serioussearch twitter) {
+		this.twitter = twitter;
+	}
 }

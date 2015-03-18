@@ -1,6 +1,6 @@
-package configuration.management;
+package de.twitter4serioussearch.configuration.management;
 
-import configuration.management.ConfigurationValues.StreamConfig;
+import de.twitter4serioussearch.configuration.management.ConfigurationValues.StreamConfig;
 
 
 /**

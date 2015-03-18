@@ -1,4 +1,4 @@
-package filter;
+package de.twitter4serioussearch.filter;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,8 +7,8 @@ import java.util.Set;
 
 import twitter4j.Status;
 import twitter4j.UserStreamListener;
-import configuration.ConfigurationHolder;
-import configuration.management.ConfigurationValues.StreamConfig;
+import de.twitter4serioussearch.configuration.ConfigurationHolder;
+import de.twitter4serioussearch.configuration.management.ConfigurationValues.StreamConfig;
 
 public class FilterManager {
 	private Set<TweetFilter> globalFilters = new HashSet<>();

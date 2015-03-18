@@ -1,4 +1,4 @@
-package configuration.management;
+package de.twitter4serioussearch.configuration.management;
 
 /** 
  * Wird geworfen, wenn die Eigenschaft zu einer Property nicht existiert. <br />

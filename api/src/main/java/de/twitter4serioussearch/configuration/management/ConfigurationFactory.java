@@ -1,11 +1,11 @@
-package configuration.management;
+package de.twitter4serioussearch.configuration.management;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Properties;
 
-import configuration.management.ConfigurationValues.StreamConfig;
+import de.twitter4serioussearch.configuration.management.ConfigurationValues.StreamConfig;
 
 /**
  * Kreiert eine Konfiguration anhand einer Default-Konfiguration und der Properties-File. Die Properties-File muss den Namen <em>twitter4serioussearch.properties</em> (siehe: {@link #PROPERTY_FILE}). <br/>

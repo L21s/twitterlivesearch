@@ -1,4 +1,4 @@
-package configuration.management;
+package de.twitter4serioussearch.configuration.management;
 
 /** 
  * Alle Keys der Property-File ({@link #PROPERTY_FILE}). 

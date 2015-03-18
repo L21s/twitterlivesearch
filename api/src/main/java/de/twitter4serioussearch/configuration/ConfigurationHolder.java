@@ -1,7 +1,7 @@
-package configuration;
+package de.twitter4serioussearch.configuration;
 
-import configuration.management.AbstractConfiguration;
-import configuration.management.ConfigurationFactory;
+import de.twitter4serioussearch.configuration.management.AbstractConfiguration;
+import de.twitter4serioussearch.configuration.management.ConfigurationFactory;
 
 
 public class ConfigurationHolder {

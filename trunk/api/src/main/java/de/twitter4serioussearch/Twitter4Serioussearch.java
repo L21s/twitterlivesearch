@@ -2,6 +2,7 @@ package de.twitter4serioussearch;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.store.Directory;
 
 import twitter4j.TwitterStream;
 
@@ -10,6 +11,9 @@ public class Twitter4Serioussearch {
 	private IndexWriter iwriter;
 	private KeywordHolder keywordHolder;
 	private TwitterStream twitterStream;
+	private Directory currentDirectory;
+	private TweetHolder tweetHolder;
+	private IdGenerator idGenerator;
 
 
 	/**

@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.IntField;
@@ -24,18 +25,16 @@ import twitter4j.UserStreamListener;
 import de.twitter4serioussearch.common.FieldNames;
 import de.twitter4serioussearch.search.Searcher;
 
-//TODO rename
 public class TwitterStreamListener implements UserStreamListener, StatusListener {
 	private TweetHolder tweetHolder;
 	private IndexWriter iwriter;
 	private QueryHolder queryHolder;
-	private Logger log = Logger.getLogger(this.getClass());
+	private static Logger log = LogManager.getLogger();
 	private Searcher searcher;
 
 	public TwitterStreamListener(Directory directory,
 			TweetHolder tweetHolder,
 			QueryHolder queryHolder, IndexWriter iwriter, Searcher searcher) {
-		log.info("init");
 		this.tweetHolder = tweetHolder;
 		this.iwriter = iwriter;
 		this.queryHolder = queryHolder;
@@ -45,6 +44,7 @@ public class TwitterStreamListener implements UserStreamListener, StatusListener
 	@Override
 	public void onStatus(Status status) {
 		log.info("Incoming Tweet: "  + status.getText());
+		
 		Document doc = new Document();
 		Integer id = IdGenerator.getInstance().getNextId();
 		Integer idToRemove = IdGenerator.getInstance().getIdToRemove();
@@ -94,6 +94,9 @@ public class TwitterStreamListener implements UserStreamListener, StatusListener
 				// because id must be unique!)
 				for (TweetListener actionListener : queryHolder.getQueries()
 						.get(queryString).values()) {
+					if(log.isTraceEnabled()) {
+						log.trace("Informed client that new tweet is incoming: " + queryString + " (untokenized)");
+					}
 					actionListener.handleNewTweet(tweetHolder.getTweets().get(
 							Integer.parseInt(document.get(FieldNames.ID
 									.getField()))));

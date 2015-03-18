@@ -8,16 +8,17 @@ import java.util.Map;
 
 import de.twitter4serioussearch.common.Util;
 
-public class KeywordHolder {
+//TODO rename!!!
+public class QueryHolder {
 	// mapping von query zu map<sessionId, Listener>
-	private Map<String, Map<String, TweetListener>> keywords = Collections
+	private Map<String, Map<String, TweetListener>> queries = Collections
 			.synchronizedMap(new HashMap<>());
 	// mapping von sessionId zu List<keyword>
 	private Map<String, List<String>> queriesForSessions = Collections
 			.synchronizedMap(new HashMap<>());
 
-	public Map<String, Map<String, TweetListener>> getKeywords() {
-		return keywords;
+	public Map<String, Map<String, TweetListener>> getQueries() {
+		return queries;
 	}
 
 	/**
@@ -36,12 +37,12 @@ public class KeywordHolder {
 	 */
 	public void registerQuery(String query, String sessionId,
 			TweetListener actionListener) {
-		Map<String, TweetListener> listeners = keywords.get(query);
+		Map<String, TweetListener> listeners = queries.get(query);
 		if (listeners == null) {
 			listeners = Collections
 					.synchronizedMap(new HashMap<String, TweetListener>());
 			listeners.put(sessionId, actionListener);
-			keywords.put(query, listeners);
+			queries.put(query, listeners);
 			return;
 		}
 		listeners.put(sessionId, actionListener);
@@ -64,7 +65,7 @@ public class KeywordHolder {
 	 *            kann von mehreren Usern registriert werden)
 	 */
 	public void unregisterQuery(String query, String sessionId) {
-		Map<String, TweetListener> listeners = keywords.get(query);
+		Map<String, TweetListener> listeners = queries.get(query);
 		Util.safe(listeners).remove(sessionId);
 	}
 

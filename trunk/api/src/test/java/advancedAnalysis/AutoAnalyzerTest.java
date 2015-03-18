@@ -16,7 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.twitter4serioussearch.IdGenerator;
-import de.twitter4serioussearch.KeywordHolder;
+import de.twitter4serioussearch.QueryHolder;
 import de.twitter4serioussearch.MyUserStreamListener;
 import de.twitter4serioussearch.Tokenizer;
 import de.twitter4serioussearch.TweetHolder;
@@ -39,7 +39,7 @@ public class AutoAnalyzerTest extends TestCase {
 	private Analyzer analyzer;
 	private IndexWriterConfig config;
 	private IndexWriter iwriter;
-	private KeywordHolder keywordHolder;
+	private QueryHolder keywordHolder;
 	private UserStreamListener listener;
 
 	@Override
@@ -48,7 +48,7 @@ public class AutoAnalyzerTest extends TestCase {
 		idGenerator = new IdGenerator();
 		tweetHolder = new TweetHolder();
 		analyzer = new WhitespaceAnalyzer();
-		keywordHolder = new KeywordHolder();
+		keywordHolder = new QueryHolder();
 		// Store the index in memory:
 		Directory directory = new RAMDirectory();
 		// To store an index on disk, use this instead:

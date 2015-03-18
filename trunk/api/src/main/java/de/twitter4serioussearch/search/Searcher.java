@@ -1,6 +1,7 @@
 package de.twitter4serioussearch.search;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -44,14 +45,14 @@ public class Searcher {
 			}
 		} catch (IOException e) {
 			log.fatal("Error when trying to check if directory exists!", e);
-			return new ScoreDoc[] {};
+			return new ArrayList<>();
 		}
 		DirectoryReader ireader;
 		try {
 			ireader = DirectoryReader.open(directory);
 		} catch (IOException e) {
 			log.fatal("Error when trying to open directory!", e);
-			return new ScoreDoc[] {};
+			return new ArrayList<>();
 		}
 		IndexSearcher isearcher = new IndexSearcher(ireader);
 		Query textQuery = null;
@@ -77,11 +78,18 @@ public class Searcher {
 		} catch (IOException e) {
 			log.fatal("Error while trying to search!", e);
 		}
-		return hits == null ? new ScoreDoc[] {} : hits;
-		isearcher.doc(hits[0].doc)
+		List<Document> result = new ArrayList<>();
+		for (int i = 0; i < hits.length; i++) {
+			try {
+				result.add(isearcher.doc(hits[i].doc));
+			} catch (IOException e) {
+				log.fatal("Error when getting document!", e);
+			}
+		}
+		return result;
 	}
 
-	public ScoreDoc[] searchForTweets(String text) {
+	public List<Document> searchForTweets(String text) {
 		return searchForTweets(null, text);
 	}
 }

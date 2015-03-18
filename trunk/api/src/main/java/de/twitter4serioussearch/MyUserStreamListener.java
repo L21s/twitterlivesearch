@@ -1,23 +1,18 @@
 package de.twitter4serioussearch;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.IntField;
 import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.queryparser.classic.QueryParser.Operator;
-import org.apache.lucene.search.BooleanClause.Occur;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.NumericRangeQuery;
-import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.Directory;
 
@@ -25,227 +20,195 @@ import twitter4j.DirectMessage;
 import twitter4j.StallWarning;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
+import twitter4j.StatusListener;
 import twitter4j.User;
 import twitter4j.UserList;
 import twitter4j.UserStreamListener;
+import de.twitter4serioussearch.common.FieldNames;
+import de.twitter4serioussearch.search.Searcher;
+rt twitter4j.UserStreamListener;
 
-public class MyUserStreamListener implements UserStreamListener {
+//TODO rename
+public class MyUserStreamListener implements UserStreamListener, StatusListener {
 	private IdGenerator idGenerator;
-	private Analyzer analyzer;
 	private TweetHolder tweetHolder;
 	private Directory directory;
 	private IndexWriter iwriter;
 	private QueryHolder keywordHolder;
+	private Logger log = Logger.getLogger(this.getClass());
+	private Searcher searcher;
 
 	public MyUserStreamListener(IdGenerator idGenerator, Directory directory,
 			Analyzer analyzer, TweetHolder tweetHolder,
-			QueryHolder keywordHolder, IndexWriter iwriter) {
+			QueryHolder keywordHolder, IndexWriter iwriter, Searcher searcher) {
 		this.idGenerator = idGenerator;
 		this.directory = directory;
-		this.analyzer = analyzer;
 		this.tweetHolder = tweetHolder;
 		this.iwriter = iwriter;
 		this.keywordHolder = keywordHolder;
+		this.searcher = searcher;
 	}
 
 	@Override
 	public void onStatus(Status status) {
+		//writing Document to the Index
 		Document doc = new Document();
 		Integer id = idGenerator.getNextId();
+		Integer idToRemove = idGenerator.getIdToRemove();
 		tweetHolder.getTweets().put(id.intValue(), status);
-		doc.add(new IntField("id", id, Field.Store.YES));
+		tweetHolder.getTweets().remove(idToRemove);
+		doc.add(new IntField(FieldNames.ID.getField(), id, Field.Store.YES));
 		String textForDoc = StringUtils.join(Tokenizer.getTokensForString(
-				status.getText(), status.getLang()), " ");
-		doc.add(new Field("text", textForDoc, TextField.TYPE_NOT_STORED));
+				status.getText(), status.getLang()), AnalyzerMapping.TOKEN_DELIMITER);
+		doc.add(new Field(FieldNames.TEXT.getField(), textForDoc, TextField.TYPE_NOT_STORED));
+		iwriter.addDocument(doc);
+		iwriter.deleteDocuments(NumericRangeQuery.newIntRange(FieldNames.ID.getField(), idToRemove,	idToRemove, true, true));
 		try {
-			iwriter.addDocument(doc);
 			iwriter.commit();
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.fatal("Error when trying to commit to index!",e);
 		}
-		Query text = null;
-		Query idQuery = null;
-		QueryParser parser = new QueryParser("text", analyzer);
-		parser.setDefaultOperator(Operator.AND);
-		try {
-			if (!DirectoryReader.indexExists(directory)) {
-				return;
-			}
-		} catch (IOException e3) {
-			e3.printStackTrace();
-		}
-		DirectoryReader ireader;
-		try {
-			ireader = DirectoryReader.open(directory);
-		} catch (IOException e2) {
-			ireader = null;
-			e2.printStackTrace();
-		}
-		IndexSearcher isearcher = new IndexSearcher(ireader);
-		for (String keyword : keywordHolder.getQueries().keySet()) {
-			BooleanQuery query = new BooleanQuery();
-			try {
-				text = parser.parse(keyword);
-				idQuery = NumericRangeQuery.newIntRange("id", id.intValue(),
-						id.intValue(), true, true);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			query.add(idQuery, Occur.MUST);
-			query.add(text, Occur.MUST);
-			ScoreDoc[] hits = null;
-			try {
-				hits = isearcher.search(query, 1000).scoreDocs;
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			if (hits != null) {
-				for (int i = 0; i < hits.length; i++) {
-					try {
-						for (TweetListener actionListener : keywordHolder
-								.getQueries().get(keyword).values()) {
-							actionListener.handleNewTweet(tweetHolder
-									.getTweets().get(
-											Integer.parseInt(isearcher.doc(
-													hits[i].doc).get("id"))));
-						}
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+		for (String queryString : keywordHolder.getQueries().keySet()) {
+			List<Document> hits = searcher.searchForTweets(id, queryString);
+			for (Document document : hits) {
+				for (TweetListener actionListener : keywordHolder
+						.getQueries().get(queryString).values()) {
+					actionListener.handleNewTweet(tweetHolder
+							.getTweets().get(
+									Integer.parseInt(document.get(FieldNames.ID.getField()))));
 				}
 			}
 		}
-		try {
-			ireader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
-
-	@Override
-	public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
-
+	try {
+		ireader.close();
+	} catch (IOException e) {
+		e.printStackTrace();
 	}
+}
 
-	@Override
-	public void onTrackLimitationNotice(int numberOfLimitedStatuses) {
+@Override
+public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
 
-	}
+}
 
-	@Override
-	public void onScrubGeo(long userId, long upToStatusId) {
+@Override
+public void onTrackLimitationNotice(int numberOfLimitedStatuses) {
 
-	}
+}
 
-	@Override
-	public void onStallWarning(StallWarning warning) {
+@Override
+public void onScrubGeo(long userId, long upToStatusId) {
 
-	}
+}
 
-	@Override
-	public void onException(Exception ex) {
+@Override
+public void onStallWarning(StallWarning warning) {
 
-	}
+}
 
-	@Override
-	public void onDeletionNotice(long directMessageId, long userId) {
+@Override
+public void onException(Exception ex) {
 
-	}
+}
 
-	@Override
-	public void onFriendList(long[] friendIds) {
+@Override
+public void onDeletionNotice(long directMessageId, long userId) {
 
-	}
+}
 
-	@Override
-	public void onFavorite(User source, User target, Status favoritedStatus) {
+@Override
+public void onFriendList(long[] friendIds) {
 
-	}
+}
 
-	@Override
-	public void onUnfavorite(User source, User target, Status unfavoritedStatus) {
+@Override
+public void onFavorite(User source, User target, Status favoritedStatus) {
 
-	}
+}
 
-	@Override
-	public void onFollow(User source, User followedUser) {
+@Override
+public void onUnfavorite(User source, User target, Status unfavoritedStatus) {
 
-	}
+}
 
-	@Override
-	public void onUnfollow(User source, User unfollowedUser) {
+@Override
+public void onFollow(User source, User followedUser) {
 
-	}
+}
 
-	@Override
-	public void onDirectMessage(DirectMessage directMessage) {
+@Override
+public void onUnfollow(User source, User unfollowedUser) {
 
-	}
+}
 
-	@Override
-	public void onUserListMemberAddition(User addedMember, User listOwner,
-			UserList list) {
+@Override
+public void onDirectMessage(DirectMessage directMessage) {
 
-	}
+}
 
-	@Override
-	public void onUserListMemberDeletion(User deletedMember, User listOwner,
-			UserList list) {
+@Override
+public void onUserListMemberAddition(User addedMember, User listOwner,
+		UserList list) {
 
-	}
+}
 
-	@Override
-	public void onUserListSubscription(User subscriber, User listOwner,
-			UserList list) {
+@Override
+public void onUserListMemberDeletion(User deletedMember, User listOwner,
+		UserList list) {
 
-	}
+}
 
-	@Override
-	public void onUserListUnsubscription(User subscriber, User listOwner,
-			UserList list) {
+@Override
+public void onUserListSubscription(User subscriber, User listOwner,
+		UserList list) {
 
-	}
+}
 
-	@Override
-	public void onUserListCreation(User listOwner, UserList list) {
+@Override
+public void onUserListUnsubscription(User subscriber, User listOwner,
+		UserList list) {
 
-	}
+}
 
-	@Override
-	public void onUserListUpdate(User listOwner, UserList list) {
+@Override
+public void onUserListCreation(User listOwner, UserList list) {
 
-	}
+}
 
-	@Override
-	public void onUserListDeletion(User listOwner, UserList list) {
+@Override
+public void onUserListUpdate(User listOwner, UserList list) {
 
-	}
+}
 
-	@Override
-	public void onUserProfileUpdate(User updatedUser) {
+@Override
+public void onUserListDeletion(User listOwner, UserList list) {
 
-	}
+}
 
-	@Override
-	public void onUserSuspension(long suspendedUser) {
+@Override
+public void onUserProfileUpdate(User updatedUser) {
 
-	}
+}
 
-	@Override
-	public void onUserDeletion(long deletedUser) {
+@Override
+public void onUserSuspension(long suspendedUser) {
 
-	}
+}
 
-	@Override
-	public void onBlock(User source, User blockedUser) {
+@Override
+public void onUserDeletion(long deletedUser) {
 
-	}
+}
 
-	@Override
-	public void onUnblock(User source, User unblockedUser) {
+@Override
+public void onBlock(User source, User blockedUser) {
 
-	}
+}
+
+@Override
+public void onUnblock(User source, User unblockedUser) {
+
+}
 
 }

@@ -2,8 +2,9 @@ package twitterTest.de.twittertest;
 
 import java.io.IOException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
@@ -25,7 +26,7 @@ public class Twitter4Serioussearch {
 	public Twitter4Serioussearch() throws IOException {
 		idGenerator = new IdGenerator();
 		tweetHolder = new TweetHolder();
-		analyzer = new StandardAnalyzer();
+		analyzer = new WhitespaceAnalyzer();
 		keywordHolder = new KeywordHolder();
 		// Store the index in memory:
 		Directory directory = new RAMDirectory();
@@ -51,6 +52,7 @@ public class Twitter4Serioussearch {
 
 	public void registerKeyword(String keyword, String sessionId,
 			TweetListener actionListener) {
+		keyword = StringUtils.join(Tokenizer.getTokensForString(keyword), " ");
 		keywordHolder.putKeyword(keyword, sessionId, actionListener);
 		// TODO in persitenten Suchen
 	}

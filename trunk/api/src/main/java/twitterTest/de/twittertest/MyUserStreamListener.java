@@ -1,19 +1,25 @@
 package twitterTest.de.twittertest;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
+import org.apache.lucene.document.IntField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.queryparser.classic.QueryParser.Operator;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.Directory;
@@ -33,6 +39,7 @@ public class MyUserStreamListener implements UserStreamListener {
 	private Directory directory;
 	private IndexWriter iwriter;
 	private KeywordHolder keywordHolder;
+	private Map<String, Class> analyzerMapping = new HashMap<>();
 
 	public MyUserStreamListener(IdGenerator idGenerator, Directory directory,
 			Analyzer analyzer, TweetHolder tweetHolder,
@@ -55,9 +62,11 @@ public class MyUserStreamListener implements UserStreamListener {
 		num.setNumericType(FieldType.NumericType.INT);
 		num.setStored(true);
 		// doc.add(new IntField("id", id.intValue(), num));
-		doc.add(new Field("id", String.valueOf(id.intValue()),
-				TextField.TYPE_STORED));
-		doc.add(new Field("text", status.getText(), TextField.TYPE_STORED));
+		doc.add(new IntField("id", id, Field.Store.YES));
+		String textForDoc = StringUtils.join(Tokenizer.getTokensForString(
+				status.getText(), status.getLang()), " ");
+		System.out.println("textForDoc:" + textForDoc);
+		doc.add(new Field("text", textForDoc, TextField.TYPE_NOT_STORED));
 		try {
 			iwriter.addDocument(doc);
 			iwriter.commit();
@@ -67,6 +76,7 @@ public class MyUserStreamListener implements UserStreamListener {
 		Query text = null;
 		Query idQuery = null;
 		QueryParser parser = new QueryParser("text", analyzer);
+		parser.setDefaultOperator(Operator.AND);
 		try {
 			if (!DirectoryReader.indexExists(directory)) {
 				return;
@@ -83,14 +93,15 @@ public class MyUserStreamListener implements UserStreamListener {
 		}
 		IndexSearcher isearcher = new IndexSearcher(ireader);
 		for (String keyword : keywordHolder.getKeywords().keySet()) {
+			System.out.println("keyword:" + keyword);
+			BooleanQuery query = new BooleanQuery();
 			try {
-				text = parser.parse("text:" + keyword);
-				idQuery = parser.parse("id:<NUMBER>" + id.intValue()
-						+ "<NUMBER>");
+				text = parser.parse(keyword);
+				idQuery = NumericRangeQuery.newIntRange("id", id.intValue(),
+						id.intValue(), true, true);
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			BooleanQuery query = new BooleanQuery();
 			query.add(idQuery, Occur.MUST);
 			query.add(text, Occur.MUST);
 			ScoreDoc[] hits = null;

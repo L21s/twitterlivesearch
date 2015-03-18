@@ -17,4 +17,14 @@ public class ConfigurationValues {
 	public static enum StreamConfig {
 		USER_STREAM, GARDENHOSE
 	}
+	
+	/**
+	 * Property-Key: twitter4serioussearch.directoryConfig ({@link ConfigurationKey#DIRECTORY_CONFIG}) <br />
+	 * Eigenschaften: {@link AbstractConfiguration#()}
+	 * @author schmitzhermes
+	 *
+	 */
+	public static enum DirectoryConfig {
+		RAM, FS_DIRECTORY
+	}
 }

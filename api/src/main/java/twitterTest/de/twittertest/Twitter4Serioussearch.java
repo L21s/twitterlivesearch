@@ -42,6 +42,8 @@ public class Twitter4Serioussearch {
 
 	@Override
 	protected void finalize() throws Throwable {
+		twitterStream.clearListeners();
+		twitterStream.cleanUp();
 		twitterStream.shutdown();
 		iwriter.close();
 		super.finalize();

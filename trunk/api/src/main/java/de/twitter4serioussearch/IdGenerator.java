@@ -4,8 +4,10 @@ import de.twitter4serioussearch.configuration.ConfigurationHolder;
 
 public class IdGenerator {
 	private static class Holder {
-		static final IdGenerator INSTANCE = new IdGenerator(ConfigurationHolder.getConfiguration().getMaxNumberOfTweets());
+		static final IdGenerator INSTANCE = new IdGenerator(ConfigurationHolder
+				.getConfiguration().getMaxNumberOfTweets());
 	}
+
 	private Integer id = Integer.MIN_VALUE;
 	private Integer MAX_NUMBER_OF_TWEETS;
 
@@ -14,7 +16,7 @@ public class IdGenerator {
 	}
 
 	private IdGenerator(Integer maxNumOfTweet) {
-		this.MAX_NUMBER_OF_TWEETS = maxNumOfTweet;
+		MAX_NUMBER_OF_TWEETS = maxNumOfTweet;
 	}
 
 	public synchronized int getNextId() {
@@ -23,6 +25,6 @@ public class IdGenerator {
 	}
 
 	public synchronized int getIdToRemove() {
-		return (id + 1) % MAX_NUMBER_OF_TWEETS;
+		return id;
 	}
 }

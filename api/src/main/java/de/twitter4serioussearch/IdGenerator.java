@@ -3,20 +3,18 @@ package de.twitter4serioussearch;
 import de.twitter4serioussearch.configuration.ConfigurationHolder;
 
 public class IdGenerator {
+	private static class Holder {
+		static final IdGenerator INSTANCE = new IdGenerator(ConfigurationHolder.getConfiguration().getMaxNumberOfTweets());
+	}
 	private Integer id = Integer.MIN_VALUE;
 	private Integer MAX_NUMBER_OF_TWEETS;
-	private static IdGenerator instance;
 
 	public static IdGenerator getInstance() {
-		if (instance == null) {
-			instance = new IdGenerator(ConfigurationHolder.getConfiguration()
-					.getMaxNumberOfTweets());
-		}
-		return instance;
+		return Holder.INSTANCE;
 	}
 
-	private IdGenerator(Integer maxNumberOfTweets) {
-		MAX_NUMBER_OF_TWEETS = maxNumberOfTweets;
+	private IdGenerator(Integer maxNumOfTweet) {
+		this.MAX_NUMBER_OF_TWEETS = maxNumOfTweet;
 	}
 
 	public synchronized int getNextId() {

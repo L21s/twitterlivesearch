@@ -1,4 +1,4 @@
-package de.twitter4serioussearch;
+package de.twitter4serioussearch.analysis;
 
 import java.util.Collections;
 import java.util.HashMap;

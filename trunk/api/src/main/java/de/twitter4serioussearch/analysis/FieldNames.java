@@ -1,4 +1,4 @@
-package de.twitter4serioussearch.common;
+package de.twitter4serioussearch.analysis;
 
 public enum FieldNames {
 	ID("id"), TEXT("text");

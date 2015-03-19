@@ -1,4 +1,4 @@
-package de.twitter4serioussearch.search;
+package de.twitter4serioussearch.analysis;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,10 +18,8 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.Directory;
 
-import de.twitter4serioussearch.AnalyzerMapping;
-import de.twitter4serioussearch.common.FieldNames;
-import de.twitter4serioussearch.configuration.ConfigurationHolder;
-import de.twitter4serioussearch.configuration.management.AbstractConfiguration;
+import de.twitter4serioussearch.api.configuration.ConfigurationHolder;
+import de.twitter4serioussearch.api.configuration.management.AbstractConfiguration;
 
 public class Searcher {
 	private static Logger log = LogManager.getLogger();

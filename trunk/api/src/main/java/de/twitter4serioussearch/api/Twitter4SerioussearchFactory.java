@@ -1,4 +1,4 @@
-package de.twitter4serioussearch;
+package de.twitter4serioussearch.api;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -13,12 +13,15 @@ import org.apache.lucene.store.RAMDirectory;
 
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
-import de.twitter4serioussearch.configuration.ConfigurationHolder;
-import de.twitter4serioussearch.configuration.management.AbstractConfiguration;
-import de.twitter4serioussearch.configuration.management.ConfigurationFactory;
-import de.twitter4serioussearch.configuration.management.ConfigurationValues.DirectoryConfig;
-import de.twitter4serioussearch.configuration.management.ConfigurationValues.StreamConfig;
-import de.twitter4serioussearch.search.Searcher;
+import de.twitter4serioussearch.analysis.AnalyzerMapping;
+import de.twitter4serioussearch.analysis.Searcher;
+import de.twitter4serioussearch.api.configuration.ConfigurationHolder;
+import de.twitter4serioussearch.api.configuration.management.AbstractConfiguration;
+import de.twitter4serioussearch.api.configuration.management.ConfigurationFactory;
+import de.twitter4serioussearch.api.configuration.management.ConfigurationValues.DirectoryConfig;
+import de.twitter4serioussearch.api.configuration.management.ConfigurationValues.StreamConfig;
+import de.twitter4serioussearch.model.TweetHolder;
+import de.twitter4serioussearch.twitter.TwitterStreamListener;
 
 public class Twitter4SerioussearchFactory {
 	private static Logger log = LogManager.getLogger();
@@ -40,7 +43,6 @@ public class Twitter4SerioussearchFactory {
 			// several important variables are initialized here
 			twitter = new Twitter4Serioussearch();
 			TweetHolder tweetHolder = new TweetHolder();
-			QueryHolder queryHolder = new QueryHolder();
 			IndexWriterConfig indexWriterConfig = new IndexWriterConfig(
 					AnalyzerMapping.getInstance().ANALYZER_FOR_DELIMITER);
 			TwitterStream twitterStream = new TwitterStreamFactory()
@@ -62,7 +64,7 @@ public class Twitter4SerioussearchFactory {
 			Searcher searcher = new Searcher(directory);
 
 			twitterStream.addListener(new TwitterStreamListener(directory,
-					tweetHolder, queryHolder, iwriter, searcher));
+					tweetHolder, iwriter, searcher));
 			if (configuration.getStreamConfig() == StreamConfig.USER_STREAM) {
 				twitterStream.user();
 			} else if (configuration.getStreamConfig() == StreamConfig.GARDENHOSE) {
@@ -73,7 +75,6 @@ public class Twitter4SerioussearchFactory {
 			twitter.setCurrentDirectory(directory);
 			twitter.setIndexWriter(iwriter);
 			twitter.setTweetHolder(tweetHolder);
-			twitter.setKeywordHolder(queryHolder);
 			twitter.setTwitterStream(twitterStream); // Referenz auf
 			// Twitter4Serioussearch
 			twitter.setSearcher(searcher);

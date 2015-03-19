@@ -1,4 +1,4 @@
-package de.twitter4serioussearch;
+package de.twitter4serioussearch.api;
 
 import java.util.List;
 
@@ -10,14 +10,19 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.Directory;
 
 import twitter4j.TwitterStream;
-import de.twitter4serioussearch.common.FieldNames;
+import de.twitter4serioussearch.analysis.AnalyzerMapping;
+import de.twitter4serioussearch.analysis.FieldNames;
+import de.twitter4serioussearch.analysis.Searcher;
+import de.twitter4serioussearch.analysis.Tokenizer;
 import de.twitter4serioussearch.common.Util;
-import de.twitter4serioussearch.search.Searcher;
+import de.twitter4serioussearch.filter.TweetFilter;
+import de.twitter4serioussearch.model.IdGenerator;
+import de.twitter4serioussearch.model.QueryManager;
+import de.twitter4serioussearch.model.TweetHolder;
 
 public class Twitter4Serioussearch {
 
 	private IndexWriter iwriter;
-	private QueryHolder queryHolder;
 	private TwitterStream twitterStream;
 	private Directory currentDirectory;
 	private TweetHolder tweetHolder;
@@ -26,7 +31,7 @@ public class Twitter4Serioussearch {
 	private static Logger log = LogManager.getLogger();
 	
 	/**
-	 * Registriert einen {@link de.twitter4serioussearch.TweetListener
+	 * Registriert einen {@link de.twitter4serioussearch.api.TweetListener
 	 * TweetListener} für die Kombination aus Query und Session
 	 *
 	 * @param query
@@ -35,17 +40,13 @@ public class Twitter4Serioussearch {
 	 *            eindeutiger Session Identifier (Hintergrund: Die gleiche Query
 	 *            kann von mehreren Usern registriert werden)
 	 * @param actionListener
-	 *            {@link de.twitter4serioussearch.TweetListener TweetListener}
+	 *            {@link de.twitter4serioussearch.api.TweetListener TweetListener}
 	 *            der invoked wird, sobald ein zum query passender Tweet
 	 *            empfangen wurde
 	 */
-	public void registerQuery(String query, String sessionId, TweetListener actionListener) {
-		
+	public void registerQuery(String query, String sessionId, TweetListener actionListener, TweetFilter...filter) {
 		query = StringUtils.join(Tokenizer.getTokensForString(query), " ");
-		queryHolder.registerQuery(query, sessionId, actionListener);
-		if(log.isTraceEnabled()) {
-			log.trace("Registered Query : " + query + " (untokenized) on Session " + sessionId);
-		}
+		QueryManager.getInstance().registerQuery(query, sessionId, actionListener, filter);
 		List<Document> documents = searcher.searchForTweets(query);
 		for (Document document : Util.safe(documents)) {
 			actionListener.handleNewTweet(tweetHolder.getTweets().get(
@@ -64,7 +65,7 @@ public class Twitter4Serioussearch {
 	 */
 	public void unregisterQuery(String query, String sessionId) {
 		query = StringUtils.join(Tokenizer.getTokensForString(query), " ");
-		queryHolder.unregisterQuery(query, sessionId);
+		QueryManager.getInstance().unregisterQuery(query, sessionId);
 	}
 
 	/**
@@ -74,7 +75,7 @@ public class Twitter4Serioussearch {
 	 *            eindeutiger Session Identifier
 	 */
 	public void unregisterSession(String sessionId) {
-		queryHolder.unregisterSession(sessionId);
+		QueryManager.getInstance().unregisterSession(sessionId);
 	}
 
 	TwitterStream getTwitterStream() {
@@ -84,9 +85,14 @@ public class Twitter4Serioussearch {
 	void setTwitterStream(TwitterStream twitterStream) {
 		this.twitterStream = twitterStream;
 	}
+	
+	public void close() throws Throwable{
+		this.finalize();
+	}
 
 	@Override
 	protected void finalize() throws Throwable {
+		AnalyzerMapping.getInstance().close();
 		twitterStream.clearListeners();
 		twitterStream.cleanUp();
 		twitterStream.shutdown();
@@ -103,14 +109,6 @@ public class Twitter4Serioussearch {
 
 	public void setIndexWriter(IndexWriter iwriter) {
 		this.iwriter = iwriter;
-	}
-
-	public QueryHolder getKeywordHolder() {
-		return queryHolder;
-	}
-
-	public void setKeywordHolder(QueryHolder keywordHolder) {
-		this.queryHolder = keywordHolder;
 	}
 
 	public Directory getCurrentDirectory() {

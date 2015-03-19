@@ -1,9 +1,9 @@
-package de.twitter4serioussearch.configuration;
+package de.twitter4serioussearch.api.configuration;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.twitter4serioussearch.configuration.management.AbstractConfiguration;
+import de.twitter4serioussearch.api.configuration.management.AbstractConfiguration;
 
 
 public class ConfigurationHolder {

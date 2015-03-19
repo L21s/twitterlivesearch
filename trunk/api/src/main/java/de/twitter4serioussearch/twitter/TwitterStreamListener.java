@@ -1,4 +1,4 @@
-package de.twitter4serioussearch;
+package de.twitter4serioussearch.twitter;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,22 +22,26 @@ import twitter4j.StatusListener;
 import twitter4j.User;
 import twitter4j.UserList;
 import twitter4j.UserStreamListener;
-import de.twitter4serioussearch.common.FieldNames;
-import de.twitter4serioussearch.search.Searcher;
+import de.twitter4serioussearch.analysis.AnalyzerMapping;
+import de.twitter4serioussearch.analysis.FieldNames;
+import de.twitter4serioussearch.analysis.Searcher;
+import de.twitter4serioussearch.analysis.Tokenizer;
+import de.twitter4serioussearch.filter.FilterManager;
+import de.twitter4serioussearch.model.IdGenerator;
+import de.twitter4serioussearch.model.QueryManager;
+import de.twitter4serioussearch.model.QueryWrapper;
+import de.twitter4serioussearch.model.TweetHolder;
 
 public class TwitterStreamListener implements UserStreamListener,
 StatusListener {
 	private TweetHolder tweetHolder;
 	private IndexWriter iwriter;
-	private QueryHolder queryHolder;
-	private static Logger log = LogManager.getLogger();
 	private Searcher searcher;
+	private static Logger log = LogManager.getLogger();
 
-	public TwitterStreamListener(Directory directory, TweetHolder tweetHolder,
-			QueryHolder queryHolder, IndexWriter iwriter, Searcher searcher) {
+	public TwitterStreamListener(Directory directory, TweetHolder tweetHolder, IndexWriter iwriter, Searcher searcher) {
 		this.tweetHolder = tweetHolder;
 		this.iwriter = iwriter;
-		this.queryHolder = queryHolder;
 		this.searcher = searcher;
 	}
 
@@ -58,9 +62,16 @@ StatusListener {
 		String textForDoc = StringUtils.join(Tokenizer.getTokensForString(
 				status.getText(), status.getLang()), AnalyzerMapping
 				.getInstance().TOKEN_DELIMITER);
+		
+		// in case the document is empty after tokenizing (i.e. just stopwords) we shouldnt add it to the index...
+		if(textForDoc.isEmpty()) {
+			return;
+		}
+		
 		if (log.isTraceEnabled()) {
 			log.trace("Indexing Document: " + textForDoc);
 		}
+		
 
 		doc.add(new Field(FieldNames.TEXT.getField(), textForDoc,
 				TextField.TYPE_NOT_STORED));
@@ -80,7 +91,7 @@ StatusListener {
 		}
 		// iterating through all the queries in the queryHolder to see if the
 		// added tweet matches any existing query
-		for (String queryString : queryHolder.getQueries().keySet()) {
+		for (String queryString : QueryManager.getInstance().getQueries()) {
 			List<Document> hits = searcher.searchForTweets(id, queryString);
 			if (hits.size() > 1) {
 				IllegalStateException e = new IllegalStateException(
@@ -97,15 +108,16 @@ StatusListener {
 				// invoking every action listener registered for the given query
 				// with every document (must actually be a single result,
 				// because id must be unique!)
-				for (TweetListener actionListener : queryHolder.getQueries()
-						.get(queryString).values()) {
+				for (QueryWrapper qw : QueryManager.getInstance().getQueryWrappersForQuery(queryString)) {
 					if (log.isTraceEnabled()) {
 						log.trace("Informed client that new tweet is incoming: "
 								+ queryString + " (untokenized)");
 					}
-					actionListener.handleNewTweet(tweetHolder.getTweets().get(
-							Integer.parseInt(document.get(FieldNames.ID
-									.getField()))));
+					Status tweet = tweetHolder.getTweet(document.get(FieldNames.ID.getField()));
+					if(FilterManager.tweetMatchesFilter(tweet, qw.getFilter())) {
+						qw.getListener().handleNewTweet(tweet);
+					}
+					
 				}
 			}
 		}

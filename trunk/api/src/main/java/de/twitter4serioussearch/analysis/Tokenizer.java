@@ -1,4 +1,4 @@
-package de.twitter4serioussearch;
+package de.twitter4serioussearch.analysis;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -48,7 +48,7 @@ public class Tokenizer {
 	/**
 	 * Tokenisiert einen gegebenen String, ermittelt automatisch Sprache des
 	 * Strings und verwendet den laut
-	 * {@link de.twitter4serioussearch.AnalyzerMapping AnalyzerMapping}
+	 * {@link de.twitter4serioussearch.analysis.AnalyzerMapping AnalyzerMapping}
 	 * passenden language specific {@link org.apache.lucene.analysis.Analyzer
 	 * Analyzer}
 	 *
@@ -63,7 +63,7 @@ public class Tokenizer {
 
 	/**
 	 * Tokenisiert einen gegebenen String, verwendet den laut
-	 * {@link de.twitter4serioussearch.AnalyzerMapping AnalyzerMapping} zum
+	 * {@link de.twitter4serioussearch.analysis.AnalyzerMapping AnalyzerMapping} zum
 	 * gegebenen languageCode passenden language specific
 	 * {@link org.apache.lucene.analysis.Analyzer Analyzer}
 	 *

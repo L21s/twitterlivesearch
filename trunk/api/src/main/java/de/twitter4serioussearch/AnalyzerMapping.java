@@ -1,5 +1,6 @@
 package de.twitter4serioussearch;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,25 +22,44 @@ import org.apache.lucene.analysis.fr.FrenchAnalyzer;
  *
  */
 public class AnalyzerMapping {
-	private final static Map<String, Class<? extends Analyzer>> mapping = new HashMap<String, Class<? extends Analyzer>>();
-	public final static String TOKEN_DELIMITER = " ";
-	public final static Analyzer ANALYZER_FOR_DELIMITER = new WhitespaceAnalyzer();
-	private final static Map<String, Analyzer> cache = new HashMap<String, Analyzer>();
-	private static Logger log = LogManager.getLogger();
-	
-	static {
-		try {
-			mapping.put("de", GermanAnalyzer.class);
-			mapping.put("en", EnglishAnalyzer.class);
-			mapping.put("fr", FrenchAnalyzer.class);
-		} catch(Exception e) {
-			log.error("Error in initializer", e);
-		}
-		
+	private static class Holder {
+		static final AnalyzerMapping instance = new AnalyzerMapping();
 	}
-	
 
-	public static Analyzer getAnalyzerForLanguage(String languageCode) {
+	private final Map<String, Class<? extends Analyzer>> mapping = new HashMap<String, Class<? extends Analyzer>>();
+	public final String TOKEN_DELIMITER = " ";
+	public final Analyzer ANALYZER_FOR_DELIMITER = new WhitespaceAnalyzer();
+	private final Map<String, Analyzer> cache = Collections
+			.synchronizedMap(new HashMap<String, Analyzer>());
+	private Logger log = LogManager.getLogger();
+
+	private AnalyzerMapping() {
+		mapping.put("de", GermanAnalyzer.class);
+		mapping.put("en", EnglishAnalyzer.class);
+		mapping.put("fr", FrenchAnalyzer.class);
+	}
+
+	public static AnalyzerMapping getInstance() {
+		return Holder.instance;
+	}
+
+	public void close() throws Throwable {
+		finalize();
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		log.info("Finalizing Analyzer Mapping");
+		for (String key : cache.keySet()) {
+			cache.get(key).close();
+			log.trace("Closed Analyzer " + cache.get(key));
+		}
+		ANALYZER_FOR_DELIMITER.close();
+		log.trace("Closed ANALYZER_FOR_DELIMITER " + ANALYZER_FOR_DELIMITER);
+		super.finalize();
+	}
+
+	public Analyzer getAnalyzerForLanguage(String languageCode) {
 		Analyzer analyzer = null;
 		if (cache.get(languageCode) == null) {
 			try {
@@ -68,7 +88,7 @@ public class AnalyzerMapping {
 		}
 	}
 
-	public static Analyzer getAnalyzerForText(String textToAnalyze) {
+	public Analyzer getAnalyzerForText(String textToAnalyze) {
 		UberLanguageDetector detector = UberLanguageDetector.getInstance();
 		return getAnalyzerForLanguage(detector.detectLang(textToAnalyze));
 	}

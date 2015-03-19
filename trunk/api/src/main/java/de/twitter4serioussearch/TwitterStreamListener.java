@@ -25,15 +25,15 @@ import twitter4j.UserStreamListener;
 import de.twitter4serioussearch.common.FieldNames;
 import de.twitter4serioussearch.search.Searcher;
 
-public class TwitterStreamListener implements UserStreamListener, StatusListener {
+public class TwitterStreamListener implements UserStreamListener,
+StatusListener {
 	private TweetHolder tweetHolder;
 	private IndexWriter iwriter;
 	private QueryHolder queryHolder;
 	private static Logger log = LogManager.getLogger();
 	private Searcher searcher;
 
-	public TwitterStreamListener(Directory directory,
-			TweetHolder tweetHolder,
+	public TwitterStreamListener(Directory directory, TweetHolder tweetHolder,
 			QueryHolder queryHolder, IndexWriter iwriter, Searcher searcher) {
 		this.tweetHolder = tweetHolder;
 		this.iwriter = iwriter;
@@ -43,10 +43,10 @@ public class TwitterStreamListener implements UserStreamListener, StatusListener
 
 	@Override
 	public void onStatus(Status status) {
-		if(log.isTraceEnabled()) {
-			log.trace("Incoming Tweet: "  + status.getText());
+		if (log.isTraceEnabled()) {
+			log.trace("Incoming Tweet: " + status.getText());
 		}
-		
+
 		Document doc = new Document();
 		Integer id = IdGenerator.getInstance().getNextId();
 		Integer idToRemove = IdGenerator.getInstance().getIdToRemove();
@@ -57,13 +57,12 @@ public class TwitterStreamListener implements UserStreamListener, StatusListener
 		// and gets tokenized
 		doc.add(new IntField(FieldNames.ID.getField(), id, Field.Store.YES));
 		String textForDoc = StringUtils.join(Tokenizer.getTokensForString(
-				status.getText(), status.getLang()),
-				AnalyzerMapping.TOKEN_DELIMITER);
-		
-		if(log.isTraceEnabled()) {
+				status.getText(), status.getLang()), AnalyzerMapping
+				.getInstance().TOKEN_DELIMITER);
+		if (log.isTraceEnabled()) {
 			log.trace("Indexing Document: " + textForDoc);
 		}
-		
+
 		doc.add(new Field(FieldNames.TEXT.getField(), textForDoc,
 				TextField.TYPE_NOT_STORED));
 		try {
@@ -101,8 +100,9 @@ public class TwitterStreamListener implements UserStreamListener, StatusListener
 				// because id must be unique!)
 				for (TweetListener actionListener : queryHolder.getQueries()
 						.get(queryString).values()) {
-					if(log.isTraceEnabled()) {
-						log.trace("Informed client that new tweet is incoming: " + queryString + " (untokenized)");
+					if (log.isTraceEnabled()) {
+						log.trace("Informed client that new tweet is incoming: "
+								+ queryString + " (untokenized)");
 					}
 					actionListener.handleNewTweet(tweetHolder.getTweets().get(
 							Integer.parseInt(document.get(FieldNames.ID

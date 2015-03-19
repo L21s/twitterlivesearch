@@ -42,9 +42,9 @@ public class Twitter4SerioussearchFactory {
 			TweetHolder tweetHolder = new TweetHolder();
 			QueryHolder queryHolder = new QueryHolder();
 			IndexWriterConfig indexWriterConfig = new IndexWriterConfig(
-					AnalyzerMapping.ANALYZER_FOR_DELIMITER);
+					AnalyzerMapping.getInstance().ANALYZER_FOR_DELIMITER);
 			TwitterStream twitterStream = new TwitterStreamFactory()
-					.getInstance();
+			.getInstance();
 			Directory directory;
 
 			// confguration part: Twitter4Serioussearch is configured here
@@ -75,14 +75,14 @@ public class Twitter4SerioussearchFactory {
 			twitter.setTweetHolder(tweetHolder);
 			twitter.setKeywordHolder(queryHolder);
 			twitter.setTwitterStream(twitterStream); // Referenz auf
-														// Twitter4Serioussearch
+			// Twitter4Serioussearch
 			twitter.setSearcher(searcher);
 
 		} catch (IOException e) {
 			e.printStackTrace();
 
 		}
-		
+
 		return twitter;
 	}
 }

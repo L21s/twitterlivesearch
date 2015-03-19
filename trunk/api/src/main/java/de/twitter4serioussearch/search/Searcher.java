@@ -48,11 +48,11 @@ public class Searcher {
 			log.fatal("Error when trying to open directory!", e);
 			return null;
 		}
-		
+
 		IndexSearcher isearcher = new IndexSearcher(ireader);
 		Query textQuery = null;
 		QueryParser parser = new QueryParser(FieldNames.TEXT.getField(),
-				AnalyzerMapping.ANALYZER_FOR_DELIMITER);
+				AnalyzerMapping.getInstance().ANALYZER_FOR_DELIMITER);
 		parser.setDefaultOperator(config.getDefaultOperator());
 		BooleanQuery query = new BooleanQuery();
 		try {
@@ -60,8 +60,9 @@ public class Searcher {
 		} catch (ParseException e) {
 			log.fatal("Error while parsing query: " + text, e);
 		}
-		
-		// if id does not equal null only the query with the given id will be searched
+
+		// if id does not equal null only the query with the given id will be
+		// searched
 		// this is used to search the latest element only
 		if (id != null) {
 			Query idQuery = NumericRangeQuery.newIntRange(

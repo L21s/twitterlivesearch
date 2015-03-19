@@ -5,16 +5,20 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 
 /**
  * Hilfsklasse um Strings zu tokenisieren
- * 
+ *
  * @author tobiaslarscheid
  */
 public class Tokenizer {
+	private static Logger log = LogManager.getLogger();
+
 	/**
 	 * @param stringToAnalyze
 	 *            String der tokenisiert werden soll
@@ -35,7 +39,6 @@ public class Tokenizer {
 			}
 			stream.end();
 			stream.close();
-			analyzer.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -54,8 +57,8 @@ public class Tokenizer {
 	 * @return Liste von tokens
 	 */
 	public static List<String> getTokensForString(String stringToAnalyze) {
-		return getTokensForString(stringToAnalyze,
-				AnalyzerMapping.getAnalyzerForText(stringToAnalyze));
+		return getTokensForString(stringToAnalyze, AnalyzerMapping
+				.getInstance().getAnalyzerForText(stringToAnalyze));
 	}
 
 	/**
@@ -72,7 +75,7 @@ public class Tokenizer {
 	 */
 	public static List<String> getTokensForString(String stringToAnalyze,
 			String languageCode) {
-		return getTokensForString(stringToAnalyze,
-				AnalyzerMapping.getAnalyzerForLanguage(languageCode));
+		return getTokensForString(stringToAnalyze, AnalyzerMapping
+				.getInstance().getAnalyzerForLanguage(languageCode));
 	}
 }

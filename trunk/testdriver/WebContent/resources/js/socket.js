@@ -7,7 +7,7 @@ function onMessage(event) {
 
 
 function addSearchKeyword(query) {
-	var socket = new WebSocket("ws://" + document.location.host + "/twitter4serioussearch/tweet");
+	var socket = new WebSocket("ws://" + document.location.host + "/twitter4serioussearch_testdriver/tweet");
 
 	socket.onmessage = onMessage;
 	socket.onopen = function() {

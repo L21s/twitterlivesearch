@@ -20,11 +20,7 @@ public class IdGenerator {
 	}
 
 	public synchronized int getNextId() {
-		id = (id + 1) % MAX_NUMBER_OF_TWEETS;
-		return id - 1;
-	}
-
-	public synchronized int getIdToRemove() {
-		return id;
+		id++;
+		return (id) % MAX_NUMBER_OF_TWEETS;
 	}
 }

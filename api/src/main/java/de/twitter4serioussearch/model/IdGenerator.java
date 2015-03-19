@@ -1,6 +1,6 @@
-package de.twitter4serioussearch;
+package de.twitter4serioussearch.model;
 
-import de.twitter4serioussearch.configuration.ConfigurationHolder;
+import de.twitter4serioussearch.api.configuration.ConfigurationHolder;
 
 public class IdGenerator {
 	private static class Holder {

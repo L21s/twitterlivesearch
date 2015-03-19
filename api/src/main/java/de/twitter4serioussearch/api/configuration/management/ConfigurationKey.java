@@ -1,4 +1,4 @@
-package de.twitter4serioussearch.configuration.management;
+package de.twitter4serioussearch.api.configuration.management;
 
 /** 
  * Alle Keys der Property-File ({@link #PROPERTY_FILE}). 
@@ -17,4 +17,6 @@ public class ConfigurationKey {
 	public static final String MAX_NUM_TWEETS = PREFIX + "maxNumberOfTweets";
 	
 	public static final String DEFAULT_OPERATOR = PREFIX + "defaultOperator";
+	
+	public static final String GLOBAL_FILTERS = PREFIX + "globalFilters";
 }

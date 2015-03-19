@@ -1,14 +1,15 @@
-package de.twitter4serioussearch.configuration.management;
+package de.twitter4serioussearch.api.configuration.management;
 
 import org.apache.lucene.queryparser.classic.QueryParser.Operator;
 
-import de.twitter4serioussearch.configuration.management.ConfigurationValues.DirectoryConfig;
-import de.twitter4serioussearch.configuration.management.ConfigurationValues.StreamConfig;
+import de.twitter4serioussearch.api.configuration.management.ConfigurationValues.DirectoryConfig;
+import de.twitter4serioussearch.api.configuration.management.ConfigurationValues.StreamConfig;
+import de.twitter4serioussearch.filter.TweetFilter;
 
 
 /**
  * Abstrakte Konfigurationsklasse. Alle Konfigurationen sollen von dieser Klasse erben. <br />
- * Standardwerte sind im Java-Doc aufgeführt und kursiv gekennzeichnet. <br />
+ * Standardwerte sind im Java-Doc aufgeführt und <em>kursiv</em> gekennzeichnet. <br />
  * Das Objekt ist immutable. Es kann nur durch die {@link ConfigurationFactory} erzeugt werden. 
  * @author schmitzhermes
  *
@@ -54,6 +55,9 @@ public abstract class AbstractConfiguration {
 	 * <b>Default:</b> AND
 	 */
 	private Operator defaultOperator;
+	
+	
+	private TweetFilter[] filters;
 
 	/**
 	 * @return Aktuelle StreamConfig
@@ -97,6 +101,14 @@ public abstract class AbstractConfiguration {
 
 	void setDefaultOperator(Operator defaultOperator) {
 		this.defaultOperator = defaultOperator;
+	}
+
+	public TweetFilter[] getFilters() {
+		return filters;
+	}
+
+	void setFilters(TweetFilter[] filters) {
+		this.filters = filters;
 	}
 
 }

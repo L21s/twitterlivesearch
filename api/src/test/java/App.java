@@ -1,6 +1,9 @@
-package de.twitter4serioussearch;
+
 
 import twitter4j.Status;
+import de.twitter4serioussearch.api.TweetListener;
+import de.twitter4serioussearch.api.Twitter4Serioussearch;
+import de.twitter4serioussearch.api.Twitter4SerioussearchFactory;
 
 /**
  * Hello world!
@@ -19,5 +22,6 @@ public class App
 				
 			}
 		});
+		
     }
 }

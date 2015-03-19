@@ -26,11 +26,12 @@ public class AnalyzerMapping {
 		static final AnalyzerMapping instance = new AnalyzerMapping();
 	}
 
-	private final Map<String, Class<? extends Analyzer>> mapping = new HashMap<String, Class<? extends Analyzer>>();
+	private final Map<String, Class<? extends Analyzer>> mapping = Collections
+			.synchronizedMap(new HashMap<String, Class<? extends Analyzer>>(3));
 	public final String TOKEN_DELIMITER = " ";
 	public final Analyzer ANALYZER_FOR_DELIMITER = new WhitespaceAnalyzer();
 	private final Map<String, Analyzer> cache = Collections
-			.synchronizedMap(new HashMap<String, Analyzer>());
+			.synchronizedMap(new HashMap<String, Analyzer>(3));
 	private Logger log = LogManager.getLogger();
 
 	private AnalyzerMapping() {

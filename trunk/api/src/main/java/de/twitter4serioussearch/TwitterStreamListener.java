@@ -49,10 +49,9 @@ StatusListener {
 
 		Document doc = new Document();
 		Integer id = IdGenerator.getInstance().getNextId();
-		Integer idToRemove = IdGenerator.getInstance().getIdToRemove();
 		// updating the tweet holder which holds all tweet objects
+		tweetHolder.getTweets().remove(id);
 		tweetHolder.getTweets().put(id.intValue(), status);
-		tweetHolder.getTweets().remove(idToRemove);
 		// adding a new document to the lucene index, text the tweets message
 		// and gets tokenized
 		doc.add(new IntField(FieldNames.ID.getField(), id, Field.Store.YES));
@@ -66,11 +65,11 @@ StatusListener {
 		doc.add(new Field(FieldNames.TEXT.getField(), textForDoc,
 				TextField.TYPE_NOT_STORED));
 		try {
-			iwriter.addDocument(doc);
 			// deleting the oldest document
 			iwriter.deleteDocuments(NumericRangeQuery.newIntRange(
-					FieldNames.ID.getField(), idToRemove, idToRemove, true,
-					true));
+					FieldNames.ID.getField(), id, id, true, true));
+			// writing the new document
+			iwriter.addDocument(doc);
 		} catch (IOException e) {
 			log.fatal("Error when writing or deleting from the index!", e);
 		}

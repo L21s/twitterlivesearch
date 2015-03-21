@@ -21,10 +21,11 @@ public class Tokenizer {
 
 	/**
 	 * @param stringToAnalyze
-	 *            String der tokenisiert werden soll
-	 * @param analyzer
-	 *            Analyzer, der zur analyse verwendet werden soll
-	 * @return Liste von tokens
+	 *            String to be tokenized
+	 * @param {@link org.apache.lucene.analysis.Analyzer Analyzer} to be used
+	 *        for analysis
+	 *
+	 * @return list of tokens
 	 */
 	public static List<String> getTokensForString(String stringToAnalyze,
 			Analyzer analyzer) {
@@ -46,15 +47,14 @@ public class Tokenizer {
 	}
 
 	/**
-	 * Tokenisiert einen gegebenen String, ermittelt automatisch Sprache des
-	 * Strings und verwendet den laut
+	 * Tokenizes a string and uses the according to
 	 * {@link de.twitter4serioussearch.analysis.AnalyzerMapping AnalyzerMapping}
-	 * passenden language specific {@link org.apache.lucene.analysis.Analyzer
+	 * appropriate language specific {@link org.apache.lucene.analysis.Analyzer
 	 * Analyzer}
 	 *
 	 * @param stringToAnalyze
-	 *            String der tokenisiert werden soll
-	 * @return Liste von tokens
+	 *            String to be tokenized
+	 * @return list of tokens
 	 */
 	public static List<String> getTokensForString(String stringToAnalyze) {
 		return getTokensForString(stringToAnalyze, AnalyzerMapping
@@ -62,16 +62,16 @@ public class Tokenizer {
 	}
 
 	/**
-	 * Tokenisiert einen gegebenen String, verwendet den laut
-	 * {@link de.twitter4serioussearch.analysis.AnalyzerMapping AnalyzerMapping} zum
-	 * gegebenen languageCode passenden language specific
-	 * {@link org.apache.lucene.analysis.Analyzer Analyzer}
+	 * Tokenizes a string and uses the according to
+	 * {@link de.twitter4serioussearch.analysis.AnalyzerMapping AnalyzerMapping}
+	 * appropriate language specific {@link org.apache.lucene.analysis.Analyzer
+	 * Analyzer} for the given language Code
 	 *
 	 * @param languageCode
-	 *            zweistelliger ISO Code der verwendeten Sprache
+	 *            two character ISO code of the language of the string
 	 * @param stringToAnalyze
-	 *            String der tokenisiert werden soll
-	 * @return Liste von tokens
+	 *            String to be tokenized
+	 * @return list of tokens
 	 */
 	public static List<String> getTokensForString(String stringToAnalyze,
 			String languageCode) {

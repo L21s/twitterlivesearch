@@ -13,66 +13,77 @@ import com.google.common.collect.Multimaps;
 import de.twitter4serioussearch.api.TweetListener;
 import de.twitter4serioussearch.filter.TweetFilter;
 
+/**
+ * This class is used to manage active queries. It provides methods to register
+ * and unregister queries as well as to conveniently iterate over them.
+ *
+ * @author tobiaslarscheid
+ *
+ */
 public class QueryManager {
 	private static class Holder {
 		static QueryManager instance = new QueryManager();
 	}
-	
+
 	private Logger log = LogManager.getLogger();
-	
-	private ListMultimap<String, QueryWrapper> queryToQueryWrappers = Multimaps.synchronizedListMultimap(ArrayListMultimap.create());
-		
-	private ListMultimap<String, QueryWrapper> sessionToQueryWrappers = Multimaps.synchronizedListMultimap(ArrayListMultimap.create());
-	
+
+	private ListMultimap<String, QueryWrapper> queryToQueryWrappers = Multimaps
+			.synchronizedListMultimap(ArrayListMultimap.create());
+
+	private ListMultimap<String, QueryWrapper> sessionToQueryWrappers = Multimaps
+			.synchronizedListMultimap(ArrayListMultimap.create());
+
 	public static QueryManager getInstance() {
 		return Holder.instance;
 	}
-	
-	private QueryManager() {}
-	
+
+	private QueryManager() {
+	}
+
 	public Set<String> getQueries() {
 		return queryToQueryWrappers.keySet();
 	}
-	
+
 	public List<QueryWrapper> getQueryWrappersForQuery(String query) {
 		return queryToQueryWrappers.get(query);
 	}
 
-	public void registerQuery(String query, String session, TweetListener listener, TweetFilter... filters) {
+	public void registerQuery(String query, String session,
+			TweetListener listener, TweetFilter... filters) {
 		QueryWrapper qw = new QueryWrapper();
 		qw.setFilter(filters);
 		qw.setListener(listener);
 		qw.setQuery(query);
 		qw.setSession(session);
-		
-		queryToQueryWrappers.put(query,qw);
+
+		queryToQueryWrappers.put(query, qw);
 		sessionToQueryWrappers.put(query, qw);
-		
-		if(log.isTraceEnabled()) {
+
+		if (log.isTraceEnabled()) {
 			log.trace("Registered Query : " + query + " on Session " + session);
 		}
 	}
-	
+
 	public void unregisterQuery(String session, String query) {
 		QueryWrapper toDelete = null;
-		for(QueryWrapper qw : sessionToQueryWrappers.get(session)) {
-			if(qw.getQuery().equals(query)) {
+		for (QueryWrapper qw : sessionToQueryWrappers.get(session)) {
+			if (qw.getQuery().equals(query)) {
 				toDelete = qw;
 				break;
 			}
 		}
-		
+
 		sessionToQueryWrappers.get(session).remove(toDelete);
 		queryToQueryWrappers.get(query).remove(toDelete);
 	}
-	
+
 	public void unregisterSession(String session) {
 		List<QueryWrapper> toDelete = sessionToQueryWrappers.get(session);
-		
+
 		for (QueryWrapper qw : toDelete) {
 			queryToQueryWrappers.remove(qw.getQuery(), qw);
 		}
 		sessionToQueryWrappers.removeAll(session);
 	}
-	
+
 }

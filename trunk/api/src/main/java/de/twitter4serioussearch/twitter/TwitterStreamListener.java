@@ -63,8 +63,7 @@ public class TwitterStreamListener implements UserStreamListener,
 		Document doc = new Document();
 		Integer id = IdGenerator.getInstance().getNextId();
 		// updating the tweet holder which holds all tweet objects
-		tweetHolder.getTweets().remove(id);
-		tweetHolder.getTweets().put(id.intValue(), status);
+		tweetHolder.getTweets().set(id, status);
 		// adding a new document to the lucene index, text the tweets message
 		// and gets tokenized
 		doc.add(new IntField(FieldNames.ID.getField(), id, Field.Store.YES));

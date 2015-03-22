@@ -12,7 +12,7 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 
 /**
- * Hilfsklasse um Strings zu tokenisieren
+ * Helper class for tokenizing strings.
  *
  * @author tobiaslarscheid
  */

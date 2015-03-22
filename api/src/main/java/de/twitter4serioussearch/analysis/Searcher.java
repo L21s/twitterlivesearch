@@ -21,6 +21,12 @@ import org.apache.lucene.store.Directory;
 import de.twitter4serioussearch.api.configuration.ConfigurationHolder;
 import de.twitter4serioussearch.api.configuration.management.AbstractConfiguration;
 
+/**
+ * This class is used to search the lucene index.
+ *
+ * @author tobiaslarscheid
+ *
+ */
 public class Searcher {
 	private static Logger log = LogManager.getLogger();
 	private Directory directory;
@@ -29,7 +35,18 @@ public class Searcher {
 		this.directory = directory;
 	}
 
-	public List<Document> searchForTweets(Integer id, String text) {
+	/**
+	 * This is the same as
+	 * {@link de.twitter4serioussearch.analysis.Searcher#searchForTweets(String)
+	 * searchForTweets(String)}, but the search is limited to the tweet with the
+	 * given id. This can for example be used to analyze the latest incoming
+	 * tweet.
+	 *
+	 * @param id
+	 * @param queryString
+	 * @return
+	 */
+	public List<Document> searchForTweets(Integer id, String queryString) {
 		AbstractConfiguration config = ConfigurationHolder.getConfiguration();
 		try {
 			if (!DirectoryReader.indexExists(directory)) {
@@ -54,14 +71,14 @@ public class Searcher {
 		parser.setDefaultOperator(config.getDefaultOperator());
 		BooleanQuery query = new BooleanQuery();
 		try {
-			textQuery = parser.parse(text);
+			textQuery = parser.parse(queryString);
 		} catch (ParseException e) {
-			log.fatal("Error while parsing query: " + text, e);
+			log.fatal("Error while parsing query: " + queryString, e);
 		}
 
 		// if id does not equal null only the query with the given id will be
 		// searched
-		// this is used to search the latest element only
+		// this can be used to search the latest element only
 		if (id != null) {
 			Query idQuery = NumericRangeQuery.newIntRange(
 					FieldNames.ID.getField(), id.intValue(), id.intValue(),
@@ -79,7 +96,7 @@ public class Searcher {
 		for (int i = 0; i < hits.length; i++) {
 			try {
 				result.add(isearcher.doc(hits[i].doc));
-				log.info("Found result for query \"" + text + "\".");
+				log.info("Found result for query \"" + queryString + "\".");
 			} catch (IOException e) {
 				log.fatal("Error when getting document!", e);
 			}
@@ -87,7 +104,20 @@ public class Searcher {
 		return result;
 	}
 
-	public List<Document> searchForTweets(String text) {
-		return searchForTweets(null, text);
+	/**
+	 * Search for a tweet in the lucene index. The query you provide must
+	 * already be tokenized and the tokens must be seperated by the correct
+	 * {@link de.twitter4serioussearch.analysis.AnalyzerMapping#TOKEN_DELIMITER
+	 * token delimiter}. The tokens are then linked by the
+	 * {@link de.twitter4serioussearch.api.configuration.management.AbstractConfiguration#getDefaultOperator()
+	 * default operator} as provided in your configuration.
+	 *
+	 * @param queryString
+	 *            The tokenized query to search for.
+	 * @return A list of matching lucene documents, empty collection if nothing
+	 *         found.
+	 */
+	public List<Document> searchForTweets(String queryString) {
+		return searchForTweets(null, queryString);
 	}
 }

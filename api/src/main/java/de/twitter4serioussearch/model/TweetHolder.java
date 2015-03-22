@@ -1,8 +1,8 @@
 package de.twitter4serioussearch.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import twitter4j.Status;
 
@@ -15,10 +15,10 @@ import twitter4j.Status;
  *
  */
 public class TweetHolder {
-	private Map<Integer, Status> tweets = Collections
-			.synchronizedMap(new HashMap<Integer, Status>());
+	private List<Status> tweets = Collections
+			.synchronizedList(new ArrayList<Status>());
 
-	public Map<Integer, Status> getTweets() {
+	public List<Status> getTweets() {
 		return tweets;
 	}
 

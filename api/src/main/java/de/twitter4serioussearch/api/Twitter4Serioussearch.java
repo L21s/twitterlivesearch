@@ -20,6 +20,17 @@ import de.twitter4serioussearch.model.IdGenerator;
 import de.twitter4serioussearch.model.QueryManager;
 import de.twitter4serioussearch.model.TweetHolder;
 
+/**
+ * This is the single point of contact with the twitter4serioussearch library.
+ * Please use the
+ * {@link de.twitter4serioussearch.api.Twitter4SerioussearchFactory
+ * Twitter4SerioussearchFactory} to create an instance of this class. If you are
+ * in a Java EE environment, it is best practice to wrap your instance of
+ * Twitter4Serioussearch in a CDI Singleton.
+ *
+ * @author tobiaslarscheid
+ *
+ */
 public class Twitter4Serioussearch {
 
 	private IndexWriter iwriter;
@@ -29,39 +40,41 @@ public class Twitter4Serioussearch {
 	private IdGenerator idGenerator;
 	private Searcher searcher;
 	private static Logger log = LogManager.getLogger();
-	
+
 	/**
-	 * Registriert einen {@link de.twitter4serioussearch.api.TweetListener
-	 * TweetListener} für die Kombination aus Query und Session
+	 * Registers a {@link de.twitter4serioussearch.api.TweetListener
+	 * TweetListener}for the combination of query and sessionId
 	 *
 	 * @param query
-	 *            Vom User gesuchter String
+	 *            the query as provided by the user
 	 * @param sessionId
-	 *            eindeutiger Session Identifier (Hintergrund: Die gleiche Query
-	 *            kann von mehreren Usern registriert werden)
+	 *            unique session identifier (reason: the same query can be
+	 *            registered by multiple users)
 	 * @param actionListener
-	 *            {@link de.twitter4serioussearch.api.TweetListener TweetListener}
-	 *            der invoked wird, sobald ein zum query passender Tweet
-	 *            empfangen wurde
+	 *            {@link de.twitter4serioussearch.api.TweetListener
+	 *            TweetListener} which is invoked whenever a new tweet matching
+	 *            the users query is received
 	 */
-	public void registerQuery(String query, String sessionId, TweetListener actionListener, TweetFilter...filter) {
+	public void registerQuery(String query, String sessionId,
+			TweetListener actionListener, TweetFilter... filter) {
 		query = StringUtils.join(Tokenizer.getTokensForString(query), " ");
-		QueryManager.getInstance().registerQuery(query, sessionId, actionListener, filter);
+		QueryManager.getInstance().registerQuery(query, sessionId,
+				actionListener, filter);
 		List<Document> documents = searcher.searchForTweets(query);
 		for (Document document : Util.safe(documents)) {
 			actionListener.handleNewTweet(tweetHolder.getTweets().get(
-					Integer.parseInt(document.get(FieldNames.ID.getField())))); 
+					Integer.parseInt(document.get(FieldNames.ID.getField()))));
 		}
 	}
 
 	/**
-	 * Deregistriert ein Query für die gegebene Session
+	 * Unregisters a query for the provided sessionId
 	 *
 	 * @param query
-	 *            zu unregistrierendes Query
+	 *            to unregister
 	 * @param sessionId
-	 *            eindeutiger Session Identifier (Hintergrund: Die gleiche Query
-	 *            kann von mehreren Usern registriert werden)
+	 *            unique session identifier (reason: the same query can be
+	 *            registered by multiple users)
 	 */
 	public void unregisterQuery(String query, String sessionId) {
 		query = StringUtils.join(Tokenizer.getTokensForString(query), " ");
@@ -69,10 +82,10 @@ public class Twitter4Serioussearch {
 	}
 
 	/**
-	 * Deregistriert alle querys für eine gegebene session
+	 * Unregisters all queries for the provided sessionId
 	 *
 	 * @param sessionId
-	 *            eindeutiger Session Identifier
+	 *            unique session identifier
 	 */
 	public void unregisterSession(String sessionId) {
 		QueryManager.getInstance().unregisterSession(sessionId);
@@ -85,9 +98,9 @@ public class Twitter4Serioussearch {
 	void setTwitterStream(TwitterStream twitterStream) {
 		this.twitterStream = twitterStream;
 	}
-	
-	public void close() throws Throwable{
-		this.finalize();
+
+	public void close() throws Throwable {
+		finalize();
 	}
 
 	@Override
@@ -96,7 +109,7 @@ public class Twitter4Serioussearch {
 		twitterStream.clearListeners();
 		twitterStream.cleanUp();
 		twitterStream.shutdown();
-		if(log.isInfoEnabled()) {
+		if (log.isInfoEnabled()) {
 			log.info("Cleanup invoked: listeners are cleared, stream is cleaned up and shut down.");
 		}
 		iwriter.close();

@@ -2,6 +2,16 @@ package de.twitter4serioussearch.model;
 
 import de.twitter4serioussearch.api.configuration.ConfigurationHolder;
 
+/**
+ * This class consecutively generates IDs for the buffered tweets in the range
+ * between {@link java.lang.Integer#MIN_VALUE Integer.MIN_VALUE} and the
+ * configured
+ * {@link de.twitter4serioussearch.api.configuration.management.AbstractConfiguration#getMaxNumberOfTweets()
+ * maxNumberOfTweets}
+ *
+ * @author tobiaslarscheid
+ *
+ */
 public class IdGenerator {
 	private static class Holder {
 		static final IdGenerator INSTANCE = new IdGenerator(ConfigurationHolder

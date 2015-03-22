@@ -14,7 +14,7 @@ import de.twitter4serioussearch.analysis.AnalyzerMapping;
 import de.twitter4serioussearch.analysis.FieldNames;
 import de.twitter4serioussearch.analysis.Searcher;
 import de.twitter4serioussearch.analysis.Tokenizer;
-import de.twitter4serioussearch.common.Util;
+import de.twitter4serioussearch.common.CollectionsUtil;
 import de.twitter4serioussearch.filter.TweetFilter;
 import de.twitter4serioussearch.model.IdGenerator;
 import de.twitter4serioussearch.model.QueryManager;
@@ -61,7 +61,7 @@ public class Twitter4Serioussearch {
 		QueryManager.getInstance().registerQuery(query, sessionId,
 				actionListener, filter);
 		List<Document> documents = searcher.searchForTweets(query);
-		for (Document document : Util.safe(documents)) {
+		for (Document document : CollectionsUtil.safe(documents)) {
 			actionListener.handleNewTweet(tweetHolder.getTweets().get(
 					Integer.parseInt(document.get(FieldNames.ID.getField()))));
 		}

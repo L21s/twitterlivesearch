@@ -33,13 +33,14 @@ import de.twitter4serioussearch.model.QueryWrapper;
 import de.twitter4serioussearch.model.TweetHolder;
 
 public class TwitterStreamListener implements UserStreamListener,
-StatusListener {
+		StatusListener {
 	private TweetHolder tweetHolder;
 	private IndexWriter iwriter;
 	private Searcher searcher;
 	private static Logger log = LogManager.getLogger();
 
-	public TwitterStreamListener(Directory directory, TweetHolder tweetHolder, IndexWriter iwriter, Searcher searcher) {
+	public TwitterStreamListener(Directory directory, TweetHolder tweetHolder,
+			IndexWriter iwriter, Searcher searcher) {
 		this.tweetHolder = tweetHolder;
 		this.iwriter = iwriter;
 		this.searcher = searcher;
@@ -50,6 +51,14 @@ StatusListener {
 		if (log.isTraceEnabled()) {
 			log.trace("Incoming Tweet: " + status.getText());
 		}
+		String textForDoc = StringUtils.join(Tokenizer.getTokensForString(
+				status.getText(), status.getLang()), AnalyzerMapping
+				.getInstance().TOKEN_DELIMITER);
+		// in case the document is empty after tokenizing (i.e. just stopwords)
+		// we shouldnt add it to the index...
+		if (textForDoc.isEmpty()) {
+			return;
+		}
 
 		Document doc = new Document();
 		Integer id = IdGenerator.getInstance().getNextId();
@@ -59,19 +68,10 @@ StatusListener {
 		// adding a new document to the lucene index, text the tweets message
 		// and gets tokenized
 		doc.add(new IntField(FieldNames.ID.getField(), id, Field.Store.YES));
-		String textForDoc = StringUtils.join(Tokenizer.getTokensForString(
-				status.getText(), status.getLang()), AnalyzerMapping
-				.getInstance().TOKEN_DELIMITER);
-		
-		// in case the document is empty after tokenizing (i.e. just stopwords) we shouldnt add it to the index...
-		if(textForDoc.isEmpty()) {
-			return;
-		}
-		
+
 		if (log.isTraceEnabled()) {
 			log.trace("Indexing Document: " + textForDoc);
 		}
-		
 
 		doc.add(new Field(FieldNames.TEXT.getField(), textForDoc,
 				TextField.TYPE_NOT_STORED));
@@ -108,16 +108,18 @@ StatusListener {
 				// invoking every action listener registered for the given query
 				// with every document (must actually be a single result,
 				// because id must be unique!)
-				for (QueryWrapper qw : QueryManager.getInstance().getQueryWrappersForQuery(queryString)) {
+				for (QueryWrapper qw : QueryManager.getInstance()
+						.getQueryWrappersForQuery(queryString)) {
 					if (log.isTraceEnabled()) {
 						log.trace("Informed client that new tweet is incoming: "
 								+ queryString + " (untokenized)");
 					}
-					Status tweet = tweetHolder.getTweet(document.get(FieldNames.ID.getField()));
-					if(FilterManager.tweetMatchesFilter(tweet, qw.getFilter())) {
+					Status tweet = tweetHolder.getTweet(document
+							.get(FieldNames.ID.getField()));
+					if (FilterManager.tweetMatchesFilter(tweet, qw.getFilter())) {
 						qw.getListener().handleNewTweet(tweet);
 					}
-					
+
 				}
 			}
 		}

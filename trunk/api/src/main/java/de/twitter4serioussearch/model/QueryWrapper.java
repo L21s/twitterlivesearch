@@ -3,13 +3,23 @@ package de.twitter4serioussearch.model;
 import de.twitter4serioussearch.api.TweetListener;
 import de.twitter4serioussearch.filter.TweetFilter;
 
+/**
+ * This class is used to hold a user-registered query string and all
+ * corresponding data like the
+ * {@link de.twitter4serioussearch.api.TweetListener TweetListener}, any
+ * {@link de.twitter4serioussearch.filter.TweetFilter TweetFilters} and the
+ * user-provided session identifier.
+ *
+ * @author tobiaslarscheid
+ *
+ */
 public class QueryWrapper {
 	private String session;
-	
+
 	private String query;
-	
+
 	private TweetListener listener;
-	
+
 	private TweetFilter[] filter;
 
 	public String getSession() {

@@ -29,7 +29,9 @@ function printSearchKeyword(tweet) {
 }
 
 function formSubmit() {
-	var form = document.getElementById("formular")
-	var query = form.elements["formular:search"].value;
+	var form = document.getElementById("formular");
+	var query = form.elements["search"].value;
+	document.getElementById("session_id").innerHTML = "<p>Session registered for query: " + query + "</p>";
 	addSearchKeyword(query);
+	form.reset();
 }

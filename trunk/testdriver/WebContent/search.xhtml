@@ -8,15 +8,35 @@
 	xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 <h:head>
 <script type="text/javascript" src="resources/js/socket.js"></script>
+<style type="text/css"> 
+	.test {
+		position:relative;
+		width:500px;
+		margin:0 auto;
+	}
+	.test #search {
+		width: 400px;
+		height:25px;
+	}
+	.test .button {
+		margin:0 auto;
+	}
+	
+	#session_id p {
+		text-align:center;
+	}
+</style>
 </h:head>
+
 <h:body>
 	<h:panelGroup layout="block" class='test'>
-		<h:form id="formular">
-			<h:messages></h:messages>
+		<h:form id="formular" prependId="false">
 			<h:inputText a:placeholder="Suchen..." id="search" name="search" />
 			
-			<h:commandButton type="button" 
+			<h:commandButton type="button" class="button"
 				value="Suchen" onclick="formSubmit()"></h:commandButton>
+				
+			<span id="session_id"></span>
 		</h:form>
 	</h:panelGroup>
 	

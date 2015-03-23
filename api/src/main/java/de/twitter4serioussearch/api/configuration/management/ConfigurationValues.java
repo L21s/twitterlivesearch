@@ -4,8 +4,8 @@ import de.twitter4serioussearch.api.configuration.build.AbstractConfiguration;
 
 
 /**
- * Alle Property-Values als statische Enums. <br />
- * <b>Die Values der Enums sind auch die Values, die in der Properties-File für die entsprechende Property zur Verfügung stehen.</b>
+ * Custom property values as static enums. <br />
+ * <b>The values of those enums are used as values in the property file as well. </b>
  * @author schmitzhermes
  *
  */

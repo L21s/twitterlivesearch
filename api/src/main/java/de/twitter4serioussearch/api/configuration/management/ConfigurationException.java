@@ -1,7 +1,7 @@
 package de.twitter4serioussearch.api.configuration.management;
 
 /** 
- * Wird geworfen, wenn die Eigenschaft zu einer Property nicht existiert. <br />
+ * Will be thrown in case a value to an existing property does not exist.
  * @see ConfigurationKey
  * @see ConfigurationValues
  * @author schmitzhermes

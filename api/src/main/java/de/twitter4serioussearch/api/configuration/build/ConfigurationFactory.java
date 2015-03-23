@@ -16,19 +16,20 @@ import org.apache.lucene.queryparser.classic.QueryParser.Operator;
 import de.twitter4serioussearch.api.configuration.ConfigurationHolder;
 import de.twitter4serioussearch.api.configuration.management.ConfigurationException;
 import de.twitter4serioussearch.api.configuration.management.ConfigurationKey;
-import de.twitter4serioussearch.api.configuration.management.ConfigurationValues;
 import de.twitter4serioussearch.api.configuration.management.ConfigurationValues.DirectoryConfig;
 import de.twitter4serioussearch.api.configuration.management.ConfigurationValues.StreamConfig;
 import de.twitter4serioussearch.filter.TweetFilter;
 
-// TODO Überarbeiten + ConfigBuilder + Filter programmatisch
 /**
- * Kreiert eine Konfiguration anhand einer Default-Konfiguration und der
- * Properties-File. Die Properties-File muss den Namen
- * <em>twitter4serioussearch.properties</em> (siehe: {@link #PROPERTY_FILE}). <br/>
- * Es existiert eine Standardkonfiguration ({@link DefaultConfiguration}), deren
- * Werte überschrieben werden, wenn eine entsprechende Property in der
- * Property-File existiert.
+ * Is used to create a configuration according to a properties file or a
+ * programmatically specified configuration. To specify a custom configuration
+ * programmatically plase use the {@link ConfigurationBuilder}. <br />
+ * The properties file should be provided using the following name:
+ * <em>twitter4serioussearch.properties</em> (see: {@link #PROPERTY_FILE}). <br/>
+ * <br />
+ * There is a suitable default configuration ({@link DefaultConfiguration}),
+ * whose values are overriden in case you specify another value either in the
+ * properties-File or in the custom configuration.
  * 
  * @author schmitzhermes
  *
@@ -42,11 +43,10 @@ public class ConfigurationFactory {
 	}
 
 	/**
-	 * Erstellt die Standardkonfiguration. Werte, die in der Property-File
-	 * angegeben werden, werden überschrieben.
+	 * Creates the default configuration according to the properties file. <br />
+	 * Default Values are overridden.
 	 * 
-	 * @return die Konfiguration anhand der Standardkonfiguration und den in der
-	 *         Property-File ({@link #PROPERTY_FILE}) überschriebenen Werten.
+	 * @return the configuration
 	 */
 	public static void createConfiguration() {
 		AbstractConfiguration defaultConfig = new DefaultConfiguration();
@@ -55,11 +55,13 @@ public class ConfigurationFactory {
 	}
 
 	/**
-	 * Erstellt die Standardkonfiguration. Werte, die in der HashMap übergeben
-	 * werden, werden überschrieben.
+	 * Creates the default configuration according to a Map. <br />
+	 * Values in the properties file are ignored. <br />
+	 * Default Values are overridden.
 	 * 
-	 * @return die Konfiguration anhand der Standardkonfiguration und den in der
-	 *         Property-File ({@link #PROPERTY_FILE}) überschriebenen Werten.
+	 * @param properties
+	 *            the properties as a Map
+	 * @return the configuration
 	 */
 	public static void createConfiguration(Map<String, String> properties) {
 		AbstractConfiguration defaultConfig = new DefaultConfiguration();
@@ -67,22 +69,27 @@ public class ConfigurationFactory {
 	}
 
 	/**
-	 * Erstellt eine eigene Konfiguration. Werte, die in der HashMap übergeben
-	 * werden, werden überschrieben.
+	 * Creates the default configuration according to the AbstractConfiguration. <br />
+	 * Values of this configuration are overriden by the properties File. So be
+	 * sure you delete the entries in the properties file.
 	 * 
-	 * @return die Konfiguration anhand der Standardkonfiguration und den in der
-	 *         Property-File ({@link #PROPERTY_FILE}) überschriebenen Werten.
+	 * @return the configuration
 	 */
 	public static void createConfiguration(AbstractConfiguration config) {
 		createConfiguration(readConfigurationFromFile(config), config);
 	}
 
 	/**
-	 * Erstellt die Konfiguration anhand einer übergebenen Map und einer eigenen
-	 * Standardkonfiguration.
+	 * creates the configuration according to a specified custom configuration
+	 * and a Map. <br />
+	 * Values of the Map have the priority. This means, if you decide to provide
+	 * different values to the same key in properties file and configuration,
+	 * the value of the configuration will be ignored.
 	 * 
-	 * @return die Konfiguration anhand der Standardkonfiguration und den in der
-	 *         Property-File ({@link #PROPERTY_FILE}) überschriebenen Werten.
+	 * @param properties
+	 *            the properties as Map
+	 * @param config
+	 *            as custom configuration
 	 */
 	public static void createConfiguration(Map<String, String> properties,
 			AbstractConfiguration config) {
@@ -92,6 +99,12 @@ public class ConfigurationFactory {
 														// API can access it now
 	}
 
+	/**
+	 * updates the configuration accroding to the specified Map.
+	 * 
+	 * @param config
+	 * @param properties
+	 */
 	private static void updateConfiguration(AbstractConfiguration config,
 			Map<String, String> properties) {
 		String value;
@@ -194,13 +207,7 @@ public class ConfigurationFactory {
 	}
 
 	/**
-	 * Liest die Konfiguration aus der Properties-File ({@link #PROPERTY_FILE})
-	 * und passt die übergebene Konfiguration entsprechend an.
-	 * (Call-by-reference)
-	 * 
-	 * @param config
-	 *            die Konfiguration vor dem Einlesen der Properties-File (
-	 *            {@link #PROPERTY_FILE})
+	 * reads the property file and returns its values as a HashMap
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static Map<String, String> readConfigurationFromFile(
@@ -220,20 +227,19 @@ public class ConfigurationFactory {
 	}
 
 	/**
-	 * Erstellt eine sprechende Konfigurationsexception.
+	 * Creates a meaningful configuration exception.
 	 * 
 	 * @param actualValue
-	 *            die vom Nutzer eingetragene Value
+	 *            the user-provided value
 	 * @param valueEnum
-	 *            das Enum der zulässigen Values
+	 *            the enum of possible values
 	 * @param property
-	 *            die betreffende Property
-	 * @param root
-	 *            -cause der Exception (hier häufig
-	 *            {@link IllegalArgumentException}, da ein Enum eine solche
-	 *            Exception wirft, falls .valueOf keinen entsprechendne Wert
-	 *            findet.
-	 * @return
+	 *            the mentioned property
+	 * @param cause
+	 *            the root cause of the exception. Usually this is a
+	 *            {@link IllegalArgumentException}, since the valueOf Method of
+	 *            an enums throws this exception, if there is no such value.
+	 * @return the meaningful exception
 	 */
 	private static ConfigurationException buildConfigValueException(
 			String actualValue, Class<? extends Enum<?>> valueEnum,

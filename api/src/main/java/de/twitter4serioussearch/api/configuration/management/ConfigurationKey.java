@@ -1,7 +1,7 @@
 package de.twitter4serioussearch.api.configuration.management;
 
 /** 
- * Alle Keys der Property-File ({@link #PROPERTY_FILE}). 
+ * all keys of the properties file. ({@link #PROPERTY_FILE}). <br />
  * @author schmitzhermes
  *
  */

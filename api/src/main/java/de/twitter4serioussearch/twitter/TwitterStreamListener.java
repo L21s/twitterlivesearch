@@ -32,6 +32,26 @@ import de.twitter4serioussearch.model.QueryManager;
 import de.twitter4serioussearch.model.QueryWrapper;
 import de.twitter4serioussearch.model.TweetHolder;
 
+/**
+ * This is a wrapper class which simplifies handling of UserStreamListener and
+ * StatusListener in Twitter4J. Since twitter4j expects the user to decide which
+ * listener should be used, we can easily use this listener for Gardenhose and
+ * Userstream. <br />
+ * There are several possibilites to handle different events in tihs class;
+ * urrently there is only an action if a new tweet is incoming, though. Please
+ * feel free to add events as desired. <br />
+ * <br />
+ * Current implementation: <br />
+ * <ul>
+ * <li>A new incoming tweet is added to the index.</li>
+ * <li>in case the buffer is full an old tweet will be deleted</li>
+ * <li>the incoming tweet is checked against all registered queries. In case the
+ * tweet matches a query, the listener of the query is invoked.</li
+ * </ul>
+ * 
+ * @author schmitzhermes
+ *
+ */
 public class TwitterStreamListener implements UserStreamListener,
 		StatusListener {
 	private TweetHolder tweetHolder;

@@ -2,6 +2,12 @@ package de.twitter4serioussearch.filter;
 
 import twitter4j.Status;
 
+/**
+ * an example implementation of a filter. <br />
+ * This filter only allows tweets in German or English.
+ * @author schmitzhermes
+ *
+ */
 public class LanguageFilter implements TweetFilter {
 
 	@Override

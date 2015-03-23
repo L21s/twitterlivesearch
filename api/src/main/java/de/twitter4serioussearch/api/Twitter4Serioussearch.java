@@ -9,6 +9,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.Directory;
 
+import twitter4j.Status;
 import twitter4j.TwitterStream;
 import de.twitter4serioussearch.analysis.AnalyzerMapping;
 import de.twitter4serioussearch.analysis.FieldNames;
@@ -24,21 +25,46 @@ import de.twitter4serioussearch.model.TweetHolder;
  * This is the single point of contact with the twitter4serioussearch library.
  * Please use the
  * {@link de.twitter4serioussearch.api.Twitter4SerioussearchFactory
- * Twitter4SerioussearchFactory} to create an instance of this class. If you are
- * in a Java EE environment, it is best practice to wrap your instance of
- * Twitter4Serioussearch in a CDI Singleton.
+ * Twitter4SerioussearchFactory} to create an instance of this class. This class
+ * is meant to be immutable. <br />
+ * In case you are in a Java EE environment, it is best
+ * practice to wrap your instance of Twitter4Serioussearch in a CDI Singleton.
  *
  * @author tobiaslarscheid
  *
  */
 public class Twitter4Serioussearch {
 
+	/**
+	 * Lucene Index Writer. Is used to store documents in the index.
+	 */
 	private IndexWriter iwriter;
+
+	/**
+	 * the twitter-stream. It is a twitter4j implementation
+	 */
 	private TwitterStream twitterStream;
+
+	/**
+	 * the specified directory.
+	 */
 	private Directory currentDirectory;
+
+	/**
+	 * the tweet-Holder. A class which holds the entire {@link Status} objects.
+	 */
 	private TweetHolder tweetHolder;
+
+	/**
+	 * is used to generate continuous ids for the index and the tweet holder.
+	 */
 	private IdGenerator idGenerator;
+
+	/**
+	 * searches through the entire index for tweets
+	 */
 	private Searcher searcher;
+
 	private static Logger log = LogManager.getLogger();
 
 	/**
@@ -95,14 +121,6 @@ public class Twitter4Serioussearch {
 		return twitterStream;
 	}
 
-	void setTwitterStream(TwitterStream twitterStream) {
-		this.twitterStream = twitterStream;
-	}
-
-	public void close() throws Throwable {
-		finalize();
-	}
-
 	@Override
 	protected void finalize() throws Throwable {
 		AnalyzerMapping.getInstance().close();
@@ -120,7 +138,7 @@ public class Twitter4Serioussearch {
 		return iwriter;
 	}
 
-	public void setIndexWriter(IndexWriter iwriter) {
+	void setIndexWriter(IndexWriter iwriter) {
 		this.iwriter = iwriter;
 	}
 
@@ -128,7 +146,7 @@ public class Twitter4Serioussearch {
 		return currentDirectory;
 	}
 
-	public void setCurrentDirectory(Directory currentDirectory) {
+	void setCurrentDirectory(Directory currentDirectory) {
 		this.currentDirectory = currentDirectory;
 	}
 
@@ -136,7 +154,7 @@ public class Twitter4Serioussearch {
 		return tweetHolder;
 	}
 
-	public void setTweetHolder(TweetHolder tweetHolder) {
+	void setTweetHolder(TweetHolder tweetHolder) {
 		this.tweetHolder = tweetHolder;
 	}
 
@@ -144,7 +162,7 @@ public class Twitter4Serioussearch {
 		return idGenerator;
 	}
 
-	public void setIdGenerator(IdGenerator idGenerator) {
+	void setIdGenerator(IdGenerator idGenerator) {
 		this.idGenerator = idGenerator;
 	}
 
@@ -152,7 +170,15 @@ public class Twitter4Serioussearch {
 		return searcher;
 	}
 
-	public void setSearcher(Searcher searcher) {
+	void setSearcher(Searcher searcher) {
 		this.searcher = searcher;
+	}
+
+	void setTwitterStream(TwitterStream twitterStream) {
+		this.twitterStream = twitterStream;
+	}
+
+	public void close() throws Throwable {
+		finalize();
 	}
 }

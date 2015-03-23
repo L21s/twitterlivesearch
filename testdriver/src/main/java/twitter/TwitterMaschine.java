@@ -9,8 +9,8 @@ import javax.json.JsonObject;
 import javax.json.spi.JsonProvider;
 
 import twitter4j.Status;
-import de.twitter4serioussearch.Twitter4Serioussearch;
-import de.twitter4serioussearch.Twitter4SerioussearchFactory;
+import de.twitter4serioussearch.api.Twitter4Serioussearch;
+import de.twitter4serioussearch.api.Twitter4SerioussearchFactory;
 
 @Singleton
 public class TwitterMaschine implements Serializable{

@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.websocket.Session;
 
 import twitter4j.Status;
-import de.twitter4serioussearch.TweetListener;
+import de.twitter4serioussearch.api.TweetListener;
 
 public class MyTweetListener implements TweetListener {
 

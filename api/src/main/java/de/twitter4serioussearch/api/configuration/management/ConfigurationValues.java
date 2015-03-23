@@ -1,5 +1,7 @@
 package de.twitter4serioussearch.api.configuration.management;
 
+import de.twitter4serioussearch.api.configuration.build.AbstractConfiguration;
+
 
 /**
  * Alle Property-Values als statische Enums. <br />

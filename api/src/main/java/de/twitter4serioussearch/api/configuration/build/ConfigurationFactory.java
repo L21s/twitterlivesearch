@@ -1,4 +1,4 @@
-package de.twitter4serioussearch.api.configuration.management;
+package de.twitter4serioussearch.api.configuration.build;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +14,9 @@ import org.apache.logging.log4j.Logger;
 import org.apache.lucene.queryparser.classic.QueryParser.Operator;
 
 import de.twitter4serioussearch.api.configuration.ConfigurationHolder;
+import de.twitter4serioussearch.api.configuration.management.ConfigurationException;
+import de.twitter4serioussearch.api.configuration.management.ConfigurationKey;
+import de.twitter4serioussearch.api.configuration.management.ConfigurationValues;
 import de.twitter4serioussearch.api.configuration.management.ConfigurationValues.DirectoryConfig;
 import de.twitter4serioussearch.api.configuration.management.ConfigurationValues.StreamConfig;
 import de.twitter4serioussearch.filter.TweetFilter;

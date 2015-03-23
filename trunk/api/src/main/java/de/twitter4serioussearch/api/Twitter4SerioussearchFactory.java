@@ -17,22 +17,50 @@ import de.twitter4serioussearch.analysis.AnalyzerMapping;
 import de.twitter4serioussearch.analysis.Searcher;
 import de.twitter4serioussearch.api.configuration.ConfigurationHolder;
 import de.twitter4serioussearch.api.configuration.build.AbstractConfiguration;
+import de.twitter4serioussearch.api.configuration.build.ConfigurationBuilder;
 import de.twitter4serioussearch.api.configuration.build.ConfigurationFactory;
+import de.twitter4serioussearch.api.configuration.build.DefaultConfiguration;
 import de.twitter4serioussearch.api.configuration.management.ConfigurationValues.DirectoryConfig;
 import de.twitter4serioussearch.api.configuration.management.ConfigurationValues.StreamConfig;
 import de.twitter4serioussearch.model.TweetHolder;
 import de.twitter4serioussearch.twitter.TwitterStreamListener;
 
+/**
+ * The Factory class, which is need to build {@link Twitter4Serioussearch}. <br />
+ * This factory configures all the necessary dependencies regarding Twitter4J, Lucene and so on. <br />
+ * Please always use this factory in order to create a {@link Twitter4Serioussearch}.
+ * @author schmitzhermes
+ *
+ */
 public class Twitter4SerioussearchFactory {
 	private static Logger log = LogManager.getLogger();
 
+	/**
+	 * builds {@link Twitter4Serioussearch} on top of the {@link DefaultConfiguration}
+	 * @return a configured and running instance of {@link Twitter4Serioussearch}
+	 */
 	public static Twitter4Serioussearch build() {
 		ConfigurationFactory.createConfiguration();
 		return configureTwitter(ConfigurationHolder.getConfiguration());
 	}
 
+	/**
+	 * builds {@link Twitter4Serioussearch} on top of an own configuration
+	 * @param userConfig
+	 * @return a configured and running instance of {@link Twitter4Serioussearch}
+	 */
 	public static Twitter4Serioussearch build(AbstractConfiguration userConfig) {
 		ConfigurationFactory.createConfiguration(userConfig);
+		return configureTwitter(ConfigurationHolder.getConfiguration());
+	}
+	
+	/**
+	 * builds {@link Twitter4Serioussearch} with the help of a {@link ConfigurationBuilder}
+	 * @param configBuilder the configuration builder
+	 * @return  a configured and running instance of {@link Twitter4Serioussearch}
+	 */
+	public static Twitter4Serioussearch build(ConfigurationBuilder configBuilder) {
+		ConfigurationFactory.createConfiguration(configBuilder.build());
 		return configureTwitter(ConfigurationHolder.getConfiguration());
 	}
 

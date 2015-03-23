@@ -1,16 +1,19 @@
-package de.twitter4serioussearch.api.configuration.management;
+package de.twitter4serioussearch.api.configuration.build;
 
 import org.apache.lucene.queryparser.classic.QueryParser.Operator;
 
+import de.twitter4serioussearch.api.configuration.management.ConfigurationKey;
+import de.twitter4serioussearch.api.configuration.management.ConfigurationValues;
 import de.twitter4serioussearch.api.configuration.management.ConfigurationValues.DirectoryConfig;
 import de.twitter4serioussearch.api.configuration.management.ConfigurationValues.StreamConfig;
 import de.twitter4serioussearch.filter.TweetFilter;
 
 
 /**
- * Abstrakte Konfigurationsklasse. Alle Konfigurationen sollen von dieser Klasse erben. <br />
- * Standardwerte sind im Java-Doc aufgeführt und <em>kursiv</em> gekennzeichnet. <br />
- * Das Objekt ist immutable. Es kann nur durch die {@link ConfigurationFactory} erzeugt werden. 
+ * Abstract configuration class. All configurations may inherit from this class. <br />
+ * You can find the configuration default values in the JavaDoc. They are <em>italic.</em> <br />
+ * This object and all of its children are immutable. Please use {@link ConfigurationBuilder} to <br />
+ * build a new configuration.
  * @author schmitzhermes
  *
  */

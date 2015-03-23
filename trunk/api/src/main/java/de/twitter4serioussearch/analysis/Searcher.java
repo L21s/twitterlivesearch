@@ -19,7 +19,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.Directory;
 
 import de.twitter4serioussearch.api.configuration.ConfigurationHolder;
-import de.twitter4serioussearch.api.configuration.management.AbstractConfiguration;
+import de.twitter4serioussearch.api.configuration.build.AbstractConfiguration;
 
 /**
  * This class is used to search the lucene index.
@@ -109,7 +109,7 @@ public class Searcher {
 	 * already be tokenized and the tokens must be seperated by the correct
 	 * {@link de.twitter4serioussearch.analysis.AnalyzerMapping#TOKEN_DELIMITER
 	 * token delimiter}. The tokens are then linked by the
-	 * {@link de.twitter4serioussearch.api.configuration.management.AbstractConfiguration#getDefaultOperator()
+	 * {@link de.twitter4serioussearch.api.configuration.build.AbstractConfiguration#getDefaultOperator()
 	 * default operator} as provided in your configuration.
 	 *
 	 * @param queryString

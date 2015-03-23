@@ -6,7 +6,7 @@ import de.twitter4serioussearch.api.configuration.ConfigurationHolder;
  * This class consecutively generates IDs for the buffered tweets in the range
  * between {@link java.lang.Integer#MIN_VALUE Integer.MIN_VALUE} and the
  * configured
- * {@link de.twitter4serioussearch.api.configuration.management.AbstractConfiguration#getMaxNumberOfTweets()
+ * {@link de.twitter4serioussearch.api.configuration.build.AbstractConfiguration#getMaxNumberOfTweets()
  * maxNumberOfTweets}
  *
  * @author tobiaslarscheid

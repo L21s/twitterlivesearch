@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import de.twitter4serioussearch.api.configuration.ConfigurationHolder;
-import de.twitter4serioussearch.api.configuration.management.ConfigurationFactory;
+import de.twitter4serioussearch.api.configuration.build.ConfigurationFactory;
 import de.twitter4serioussearch.filter.LanguageFilter;
 
 @RunWith(JUnit4.class)

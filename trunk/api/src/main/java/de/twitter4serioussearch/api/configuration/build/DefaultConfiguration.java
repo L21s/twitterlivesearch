@@ -1,4 +1,4 @@
-package de.twitter4serioussearch.api.configuration.management;
+package de.twitter4serioussearch.api.configuration.build;
 
 import org.apache.lucene.queryparser.classic.QueryParser.Operator;
 

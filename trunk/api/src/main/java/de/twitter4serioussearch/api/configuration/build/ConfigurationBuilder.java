@@ -1,0 +1,47 @@
+package de.twitter4serioussearch.api.configuration.build;
+
+import org.apache.lucene.queryparser.classic.QueryParser.Operator;
+
+import de.twitter4serioussearch.api.configuration.management.ConfigurationValues.DirectoryConfig;
+import de.twitter4serioussearch.api.configuration.management.ConfigurationValues.StreamConfig;
+import de.twitter4serioussearch.filter.TweetFilter;
+
+public class ConfigurationBuilder {
+	private DefaultConfiguration config = new DefaultConfiguration();
+		
+	public ConfigurationBuilder setStreamConfig(StreamConfig streamConfig) {
+		config.setStreamConfig(streamConfig);
+		return this;
+	}
+	
+	public ConfigurationBuilder setDirectoryConfig(DirectoryConfig directoryConfig) {
+		config.setDirectoryConfig(directoryConfig);
+		return this;
+	}
+	
+	public ConfigurationBuilder setDirectory(String directory) {
+		config.setDirectory(directory);
+		return this;
+	}
+	
+	public ConfigurationBuilder setMaxNumberOfTweets(Integer maxNumberOfTweets) {
+		config.setMaxNumberOfTweets(maxNumberOfTweets);
+		return this;
+	}
+	
+	public ConfigurationBuilder setDefaultOperator(Operator defaultOperator) {
+		config.setDefaultOperator(defaultOperator);
+		return this;
+	}
+	
+	public ConfigurationBuilder setFilters(TweetFilter... filters) {
+		config.setFilters(filters);
+		return this;
+	}
+	
+	public AbstractConfiguration build() {
+		return config;
+	}
+	
+	
+}

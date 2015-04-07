@@ -1,3 +1,7 @@
+socket = new WebSocket("ws://" + document.location.host
+		+ "/twitter4serioussearch_testdriver/tweet");
+socket.onmessage = onMessage;
+
 function onMessage(event) {
 	var tweet = JSON.parse(event.data);
 	if (tweet.action === "new_tweet") {
@@ -5,19 +9,12 @@ function onMessage(event) {
 	}
 }
 
-
 function addSearchKeyword(query) {
-	var socket = new WebSocket("ws://" + document.location.host + "/twitter4serioussearch_testdriver/tweet");
-
-	socket.onmessage = onMessage;
-	socket.onopen = function() {
-		var SearchQuery = {
-			action : "add",
-			name : query
-		};
-		socket.send(JSON.stringify(SearchQuery));
-	}
-
+	var SearchQuery = {
+		action : "add",
+		name : query
+	};
+	socket.send(JSON.stringify(SearchQuery));
 }
 
 function printSearchKeyword(tweet) {
@@ -31,7 +28,11 @@ function printSearchKeyword(tweet) {
 function formSubmit() {
 	var form = document.getElementById("formular");
 	var query = form.elements["search"].value;
-	document.getElementById("session_id").innerHTML = "<p>Session registered for query: " + query + "</p>";
+	document.getElementById("session_id").innerHTML = "<p>Session registered for query: "
+			+ query + "</p>";
+	var searchQueries = document.getElementById("tweets");
+
 	addSearchKeyword(query);
 	form.reset();
+
 }

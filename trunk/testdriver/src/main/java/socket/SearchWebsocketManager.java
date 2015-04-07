@@ -46,5 +46,9 @@ public class SearchWebsocketManager {
 		if("add".equals(jsonMessage.getString("action"))) {
 			twitter.getTwitter().registerQuery(jsonMessage.getString("name"), session.getId(), new MyTweetListener(session));
 		}
+		
+		if("removeall".equals(jsonMessage.getString("action"))) {
+			twitter.getTwitter().unregisterSession(session.getId());
+		}
 	}
 }

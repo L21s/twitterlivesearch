@@ -57,8 +57,16 @@ public class Tokenizer {
 	 * @return list of tokens
 	 */
 	public static List<String> getTokensForString(String stringToAnalyze) {
+		if (log.isTraceEnabled()) {
+			log.trace(stringToAnalyze
+					+ " is going to be indexed with the follwing Analyzer: "
+					+ AnalyzerMapping.getInstance().getAnalyzerForText(
+							stringToAnalyze));
+		}
+
 		return getTokensForString(stringToAnalyze, AnalyzerMapping
 				.getInstance().getAnalyzerForText(stringToAnalyze));
+
 	}
 
 	/**
@@ -75,7 +83,15 @@ public class Tokenizer {
 	 */
 	public static List<String> getTokensForString(String stringToAnalyze,
 			String languageCode) {
+		if (log.isTraceEnabled()) {
+			log.trace(stringToAnalyze
+					+ " is going to be indexed with the follwing analyzer: "
+					+ AnalyzerMapping.getInstance().getAnalyzerForLanguage(
+							languageCode));
+		}
+
 		return getTokensForString(stringToAnalyze, AnalyzerMapping
 				.getInstance().getAnalyzerForLanguage(languageCode));
+
 	}
 }

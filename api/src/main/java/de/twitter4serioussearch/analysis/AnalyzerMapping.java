@@ -49,7 +49,7 @@ public class AnalyzerMapping {
 	 * {@link org.apache.lucene.index.IndexWriter IndexWriter} to split the
 	 * tokens.
 	 */
-	public final String TOKEN_DELIMITER = " ";
+	public static final String TOKEN_DELIMITER = " ";
 	/**
 	 * see
 	 * {@link de.twitter4serioussearch.analysis.AnalyzerMapping#TOKEN_DELIMITER

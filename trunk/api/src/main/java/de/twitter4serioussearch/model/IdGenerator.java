@@ -18,7 +18,7 @@ public class IdGenerator {
 				.getConfiguration().getMaxNumberOfTweets());
 	}
 
-	private Integer id = Integer.MIN_VALUE;
+	private Integer id = 0;
 	private Integer MAX_NUMBER_OF_TWEETS;
 
 	public static IdGenerator getInstance() {

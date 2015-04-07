@@ -2,6 +2,7 @@ package de.twitter4serioussearch.analysis;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -47,6 +48,10 @@ public class Searcher {
 	 * @return
 	 */
 	public List<Document> searchForTweets(Integer id, String queryString) {
+		if(queryString.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
 		AbstractConfiguration config = ConfigurationHolder.getConfiguration();
 		try {
 			if (!DirectoryReader.indexExists(directory)) {
@@ -118,6 +123,10 @@ public class Searcher {
 	 *         found.
 	 */
 	public List<Document> searchForTweets(String queryString) {
+		if(queryString.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
 		return searchForTweets(null, queryString);
 	}
 }

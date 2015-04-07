@@ -47,7 +47,7 @@ import de.twitter4serioussearch.model.TweetHolder;
  * <li>in case the buffer is full an old tweet will be deleted</li>
  * <li>the incoming tweet is checked against all registered queries. In case the
  * tweet matches a query, the listener of the query is invoked.</li
- * </ul>
+ * </ul> <br />
  * 
  * @author schmitzhermes
  *
@@ -83,7 +83,11 @@ public class TwitterStreamListener implements UserStreamListener,
 		Document doc = new Document();
 		Integer id = IdGenerator.getInstance().getNextId();
 		// updating the tweet holder which holds all tweet objects
-		tweetHolder.getTweets().set(id, status);
+		try {
+			tweetHolder.getTweets().set(id, status);			
+		} catch(IndexOutOfBoundsException e) {
+			tweetHolder.getTweets().add(status);
+		}
 		// adding a new document to the lucene index, text the tweets message
 		// and gets tokenized
 		doc.add(new IntField(FieldNames.ID.getField(), id, Field.Store.YES));

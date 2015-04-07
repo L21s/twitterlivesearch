@@ -84,6 +84,10 @@ public class QueryManager {
 			queryToQueryWrappers.remove(qw.getQuery(), qw);
 		}
 		sessionToQueryWrappers.removeAll(session);
+		
+		if (log.isTraceEnabled()) {
+			log.trace("Unregistered all queries for Session: " + session);
+		}
 	}
 
 }

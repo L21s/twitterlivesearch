@@ -19,6 +19,7 @@ After that you can just add it to your project like this:
 	<scope>compile</scope>
 </dependency>
 ```
+The current version is: 0.1-SNAPSHOT
 
 If you do not want to do this you can package it via maven (as a jar) and add it as an old-fashion dependency to your classpath.
 

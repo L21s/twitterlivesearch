@@ -36,6 +36,7 @@ oauth.accessTokenSecret=
 ```
 
 *twitterlivesearch.properties*
+
 You can find instructions how to configure this API in *de.twitterlivesearch.api.configuration.build.AbstractConfiguration* class. 
 
 [In case you ask yourself: why didn't those guys make just one properties-File? We did not want to be too dependent on twitter4j API. So in case twitter4j updates its properties (but we do not update our entire API), you can still make use of the properties provided by the twitter4j-guys...]

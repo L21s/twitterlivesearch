@@ -20,15 +20,15 @@ import de.twitter4serioussearch.filter.TweetFilter;
 public abstract class AbstractConfiguration {
 	
 	/**
-	 * Konfiguriert, ob es einen User-Account als Listener gibt oder die Gardenhose verwendet werden soll. <br /> <br />
-	 * <b>Property-Key:</b> twitter4serioussearch.streamConfig (siehe: {@link ConfigurationKey#STREAM_CONFIG}) <br />
-	 * <b>Property-Values:</b> <em>USER_STREAM</em> | GARDENHOSE (siehe: {@link ConfigurationValues.StreamConfig}) <br />
+	 * Configures, whether Twitter4J should listen to a user-stream (specified account in twitter4j.properties) or to the gardenhose. <br /> <br />
+	 * <b>Property-Key:</b> twitter4serioussearch.streamConfig (see: {@link ConfigurationKey#STREAM_CONFIG}) <br />
+	 * <b>Property-Values:</b> <em>USER_STREAM</em> | GARDENHOSE (see: {@link ConfigurationValues.StreamConfig}) <br />
 	 * <b>Default:</b> USER_STREAM
 	 */
 	private StreamConfig streamConfig;
 	
 	/**
-	 * Konfiguriert, ob das RAM-Directory oder ein File-Directory von Lucene verwendet werden soll. <br /> <br />
+	 * Configures, whether the RAM-Directory or a File-Directory should be used to store the Lucene Index. <br /> <br />
 	 * <b>Property-Key:</b> twitter4serioussearch.directoryConfig (siehe: {@link ConfigurationKey#DIRECTORY_CONFIG}) <br />
 	 * <b>Property-Values:</b> <em>RAM</em> | FS_DIRECTORY (siehe: {@link ConfigurationValues.DirectoryConfig}) <br />
 	 * <b>Default:</b> RAM
@@ -36,15 +36,15 @@ public abstract class AbstractConfiguration {
 	private DirectoryConfig directoryConfig;
 	
 	/**
-	 * Wenn Lucene mit einem Directory arbeiten soll, gibt diese Eigenschaft an, welches Directory es ist. <br /> <br />
-	 * <b>Property-Key:</b> twitter4serioussearch.directory (siehe: {@link ConfigurationKey#DIRECTORY}) <br />
+	 * Specifies the directory of the Lucene Index (in case you chose File-Directory in {@link #streamConfig}). <br /> <br />
+	 * <b>Property-Key:</b> twitter4serioussearch.directory (see: {@link ConfigurationKey#DIRECTORY}) <br />
 	 * <b>Property-Values:</b> ein Verzeichnis 
 	 * <b>Default:</b> /var/lucene/index
 	 */
 	private String directory;
 	
 	/**
-	 * Die maximale Anzahl von Tweets die im Buffer vorgehalten werden soll. <br /> <br />
+	 * Maximum amount of tweets that is stored in the buffer.  <br /> <br />
 	 * <b>Property-Key:</b> twitter4serioussearch.maxNumberOfTweets (siehe: {@link ConfigurationKey#MAX_NUM_TWEETS}) <br />
 	 * <b>Property-Values:</b> Zahl
 	 * <b>Default:</b> 50000
@@ -62,10 +62,6 @@ public abstract class AbstractConfiguration {
 	
 	private TweetFilter[] filters;
 
-	/**
-	 * @return Aktuelle StreamConfig
-	 * @see #streamConfig
-	 */
 	public StreamConfig getStreamConfig() {
 		return streamConfig;
 	}	

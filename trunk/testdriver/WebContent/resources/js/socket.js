@@ -3,6 +3,7 @@ socket = new WebSocket("ws://" + document.location.host
 socket.onmessage = onMessage;
 
 function onMessage(event) {
+	console.log(event.data);
 	var tweet = JSON.parse(event.data);
 	if (tweet.action === "new_tweet") {
 		printSearchKeyword(tweet.text);

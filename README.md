@@ -31,6 +31,8 @@ oauth.accessTokenSecret=
 *twitterlivesearch.properties*
 You can find instructions how to configure this API in /de.twitterlivesearch.api.configuration.build.AbstractConfiguration/ class. 
 
+[In case you ask yourself: why didn't those guys make just one properties-File? We did not want to be too dependent on twitter4j API. So in case twitter4j updates its properties (but we do not update our entire API), you can still make use of the properties provided by the twitter4j-guys...]
+
 
 Use of the API itself is really simple. You need a main class which builds the TwitterLiveSearch object by making use of the TwitterLiveSearchFactory. 
 
@@ -55,3 +57,9 @@ public class App
 ```
 
 As you can see above: an instance of TwitterLiveSearch is build by the factory. TwitterLiveSearch provides a method to register a keyword. In this case the first argument "MyRegisteredKeyWord" is the keyword, the second argument "1" is the unique session id and the third argument is the Listener, which is invoked when a new tweet that matches the keyword is incoming.
+The folder /testdriver/ in this repo shows a simple example, which makes use of this API in connection with the JEE-WebSocket technology.
+
+## Best Practices
+- in case you are in JEE-Environment it is recommended (but absolutely necessary) that holds the TwitterLiveSearch object should be annotated with @Singleton
+- we tried to make extended use of JavaDoc to make your life easier
+- our logging is based on log4j - by default it is set to TRACE-level (which shows every single detail). We recommend to set it to WARN-Level if you use this library in production

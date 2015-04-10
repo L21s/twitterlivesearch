@@ -8,7 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import twitter4j.Status;
-import de.twitter4serioussearch.api.TweetListener;
+import de.twitterlivesearch.api.TweetListener;
 
 public class MyTweetListener implements TweetListener {
 

@@ -9,21 +9,21 @@ import javax.json.JsonObject;
 import javax.json.spi.JsonProvider;
 
 import twitter4j.Status;
-import de.twitter4serioussearch.api.Twitter4Serioussearch;
-import de.twitter4serioussearch.api.Twitter4SerioussearchFactory;
+import de.twitterlivesearch.api.TwitterLiveSearch;
+import de.twitterlivesearch.api.TwitterLiveSearchFactory;
 
 @Singleton
-public class TwitterMaschine implements Serializable {
+public class TwitterMaschine implements Serializable { 
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = 5748078495621149611L;
 
-	private Twitter4Serioussearch twitter;
+	private TwitterLiveSearch twitter;
 
 	@PostConstruct
 	public void init() {
-		setTwitter(Twitter4SerioussearchFactory.build());
+		setTwitter(TwitterLiveSearchFactory.build());
 
 	}
 
@@ -40,11 +40,11 @@ public class TwitterMaschine implements Serializable {
 		return addMessage;
 	}
 
-	public Twitter4Serioussearch getTwitter() {
+	public TwitterLiveSearch getTwitter() {
 		return twitter;
 	}
 
-	public void setTwitter(Twitter4Serioussearch twitter) {
+	public void setTwitter(TwitterLiveSearch twitter) {
 		this.twitter = twitter;
 	}
 }

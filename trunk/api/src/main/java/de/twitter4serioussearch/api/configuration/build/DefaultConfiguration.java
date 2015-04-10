@@ -6,7 +6,7 @@ import de.twitter4serioussearch.api.configuration.management.ConfigurationValues
 import de.twitter4serioussearch.api.configuration.management.ConfigurationValues.StreamConfig;
 
 /**
- * 
+ * The default configuration. See this class if you want to know some default values.
  * @author schmitzhermes
  *
  */

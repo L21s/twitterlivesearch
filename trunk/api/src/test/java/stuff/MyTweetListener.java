@@ -1,4 +1,4 @@
-package advancedAnalysis;
+package stuff;
 
 import de.twitter4serioussearch.api.TweetListener;
 import twitter4j.Status;

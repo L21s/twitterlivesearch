@@ -13,8 +13,8 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
-import twitter.MyTweetListener;
-import twitter.TwitterMaschine;
+import twitter.SessionTweetListener;
+import twitter.TwitterMachine;
 
 @ServerEndpoint("/tweet")
 public class SearchWebsocketManager {
@@ -22,7 +22,7 @@ public class SearchWebsocketManager {
 	private SearchSessionHandler handler;
 	
 	@Inject
-	private TwitterMaschine twitter;
+	private TwitterMachine twitter;
 	
 	@OnOpen
 	public void open(Session session) {
@@ -44,7 +44,7 @@ public class SearchWebsocketManager {
 		JsonObject jsonMessage = reader.readObject();
 		
 		if("add".equals(jsonMessage.getString("action"))) {
-			twitter.getTwitter().registerQuery(jsonMessage.getString("name"), session.getId(), new MyTweetListener(session));
+			twitter.getTwitter().registerQuery(jsonMessage.getString("name"), session.getId(), new SessionTweetListener(session));
 		}
 		
 		if("removeall".equals(jsonMessage.getString("action"))) {

@@ -40,8 +40,8 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>twitter4serioussearch</groupId>
-			<artifactId>de.twitter4serioussearch</artifactId>
+			<groupId>twitterlivesearch</groupId>
+			<artifactId>de.twitterlivesearch</artifactId>
 			<version>0.1-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>

@@ -10,12 +10,12 @@ import org.apache.logging.log4j.Logger;
 import twitter4j.Status;
 import de.twitterlivesearch.api.TweetListener;
 
-public class MyTweetListener implements TweetListener {
+public class SessionTweetListener implements TweetListener {
 
 	private Session session;
 	private Logger log = LogManager.getLogger();
 
-	public MyTweetListener(Session session) {
+	public SessionTweetListener(Session session) {
 		this.session = session;
 	}
 
@@ -23,9 +23,9 @@ public class MyTweetListener implements TweetListener {
 	public void handleNewTweet(Status tweet) {
 		try {
 			session.getBasicRemote().sendText(
-					TwitterMaschine.createTweetMessage(tweet).toString());
+					TwitterMachine.createTweetMessage(tweet).toString());
 			log.trace("sent text "
-					+ TwitterMaschine.createTweetMessage(tweet).toString()
+					+ TwitterMachine.createTweetMessage(tweet).toString()
 					+ " to session " + session);
 		} catch (IOException e) {
 			e.printStackTrace();

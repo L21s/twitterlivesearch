@@ -13,7 +13,7 @@ import de.twitterlivesearch.api.TwitterLiveSearch;
 import de.twitterlivesearch.api.TwitterLiveSearchFactory;
 
 @Singleton
-public class TwitterMaschine implements Serializable { 
+public class TwitterMachine implements Serializable { 
 	/**
 	 *
 	 */

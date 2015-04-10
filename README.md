@@ -1,6 +1,7 @@
 # twitterlivesearch
 
 ## Introduction
+First of all: this documentation is in development. Not everything you can with this library is pointed out here. JavaDoc will guide you, though.
 This library was actually designed for a university purpose: the main idea is to provide a live search through a Twitter user stream or the Gardenhose. This functionality is achieved by storing the last n (you can configure it...) tweets in a Apache Lucene index. As a user of this library you can register keywords you are interested in and the library will inform you in case a keyword-matching tweet is incoming. We actually designed it generally; its main purpose is the usage in a search engine (http://serioussearch.de), though.
 
 ## How to include it?

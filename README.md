@@ -7,13 +7,18 @@ This library was actually designed for a university purpose: the main idea is to
 To use the library either package it via maven and add it to your classpath or directly use it as a maven dependency:
 ```
 <dependency>
-		<groupId>twitterlivesearch</groupId>
-		<artifactId>de.twitterlivesearch</artifactId>
-		<version>{CURRENT_VERSION}</version>
-		<scope>compile</scope>
+	<groupId>twitterlivesearch</groupId>
+	<artifactId>de.twitterlivesearch</artifactId>
+	<version>{CURRENT_VERSION}</version>
+	<scope>compile</scope>
 </dependency>
 ```
 The current version is: 0.1-SNAPSHOT
+*Since we do not have this library in maven central or any other public repository, you have to install it manually before you can use it.* This means: 
+```
+cd /the/path/to/twitterlivesearch/root/directory
+mvn clean install
+```
 
 ## How to use it?
 First of all you need to make sure that you have a twitter account and you have OAuth credentials for it. You can find this instructions by simply googling it.

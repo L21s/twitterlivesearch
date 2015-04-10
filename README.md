@@ -4,7 +4,13 @@
 This library was actually designed for a university purpose: the main idea is to provide a live search through a Twitter user stream or the Gardenhose. This functionality is achieved by storing the last n (you can configure it...) tweets in a Apache Lucene index. As a user of this library you can register keywords you are interested in and the library will inform you in case a keyword-matching tweet is incoming. We actually designed it generally; its main purpose is the usage in a search engine (http://serioussearch.de), though.
 
 ## How to include it?
-To use the library either package it via maven and add it to your classpath or directly use it as a maven dependency:
+_Since we do not have this library in maven central or any other public repository, you have to install it manually before you can use it._ This means: 
+```
+cd /the/path/to/twitterlivesearch/root/directory
+mvn clean install
+```
+
+After that you can just add it to your project like this:
 ```
 <dependency>
 	<groupId>twitterlivesearch</groupId>
@@ -13,12 +19,8 @@ To use the library either package it via maven and add it to your classpath or d
 	<scope>compile</scope>
 </dependency>
 ```
-The current version is: 0.1-SNAPSHOT
-*Since we do not have this library in maven central or any other public repository, you have to install it manually before you can use it.* This means: 
-```
-cd /the/path/to/twitterlivesearch/root/directory
-mvn clean install
-```
+
+If you do not want to do this you can package it via maven (as a jar) and add it as an old-fashion dependency to your classpath.
 
 ## How to use it?
 First of all you need to make sure that you have a twitter account and you have OAuth credentials for it. You can find this instructions by simply googling it.
@@ -34,7 +36,7 @@ oauth.accessTokenSecret=
 ```
 
 *twitterlivesearch.properties*
-You can find instructions how to configure this API in /de.twitterlivesearch.api.configuration.build.AbstractConfiguration/ class. 
+You can find instructions how to configure this API in *de.twitterlivesearch.api.configuration.build.AbstractConfiguration* class. 
 
 [In case you ask yourself: why didn't those guys make just one properties-File? We did not want to be too dependent on twitter4j API. So in case twitter4j updates its properties (but we do not update our entire API), you can still make use of the properties provided by the twitter4j-guys...]
 

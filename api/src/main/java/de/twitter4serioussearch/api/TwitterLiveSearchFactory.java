@@ -26,50 +26,50 @@ import de.twitter4serioussearch.model.TweetHolder;
 import de.twitter4serioussearch.twitter.TwitterStreamListener;
 
 /**
- * The Factory class, which is need to build {@link Twitter4Serioussearch}. <br />
+ * The Factory class, which is need to build {@link TwitterLiveSearch}. <br />
  * This factory configures all the necessary dependencies regarding Twitter4J, Lucene and so on. <br />
- * Please always use this factory in order to create a {@link Twitter4Serioussearch}.
+ * Please always use this factory in order to create a {@link TwitterLiveSearch}.
  * @author schmitzhermes
  *
  */
-public class Twitter4SerioussearchFactory {
+public class TwitterLiveSearchFactory {
 	private static Logger log = LogManager.getLogger();
 
 	/**
-	 * builds {@link Twitter4Serioussearch} on top of the {@link DefaultConfiguration}
-	 * @return a configured and running instance of {@link Twitter4Serioussearch}
+	 * builds {@link TwitterLiveSearch} on top of the {@link DefaultConfiguration}
+	 * @return a configured and running instance of {@link TwitterLiveSearch}
 	 */
-	public static Twitter4Serioussearch build() {
+	public static TwitterLiveSearch build() {
 		ConfigurationFactory.createConfiguration();
 		return configureTwitter(ConfigurationHolder.getConfiguration());
 	}
 
 	/**
-	 * builds {@link Twitter4Serioussearch} on top of an own configuration
+	 * builds {@link TwitterLiveSearch} on top of an own configuration
 	 * @param userConfig
-	 * @return a configured and running instance of {@link Twitter4Serioussearch}
+	 * @return a configured and running instance of {@link TwitterLiveSearch}
 	 */
-	public static Twitter4Serioussearch build(AbstractConfiguration userConfig) {
+	public static TwitterLiveSearch build(AbstractConfiguration userConfig) {
 		ConfigurationFactory.createConfiguration(userConfig);
 		return configureTwitter(ConfigurationHolder.getConfiguration());
 	}
 	
 	/**
-	 * builds {@link Twitter4Serioussearch} with the help of a {@link ConfigurationBuilder}
+	 * builds {@link TwitterLiveSearch} with the help of a {@link ConfigurationBuilder}
 	 * @param configBuilder the configuration builder
-	 * @return  a configured and running instance of {@link Twitter4Serioussearch}
+	 * @return  a configured and running instance of {@link TwitterLiveSearch}
 	 */
-	public static Twitter4Serioussearch build(ConfigurationBuilder configBuilder) {
+	public static TwitterLiveSearch build(ConfigurationBuilder configBuilder) {
 		ConfigurationFactory.createConfiguration(configBuilder.build());
 		return configureTwitter(ConfigurationHolder.getConfiguration());
 	}
 
-	private static Twitter4Serioussearch configureTwitter(
+	private static TwitterLiveSearch configureTwitter(
 			AbstractConfiguration configuration) {
-		Twitter4Serioussearch twitter = null;
+		TwitterLiveSearch twitter = null;
 		try {
 			// several important variables are initialized here
-			twitter = new Twitter4Serioussearch();
+			twitter = new TwitterLiveSearch();
 			TweetHolder tweetHolder = new TweetHolder();
 			IndexWriterConfig indexWriterConfig = new IndexWriterConfig(
 					AnalyzerMapping.getInstance().ANALYZER_FOR_DELIMITER);
@@ -77,7 +77,7 @@ public class Twitter4SerioussearchFactory {
 			.getInstance();
 			Directory directory;
 
-			// confguration part: Twitter4Serioussearch is configured here
+			// confguration part: TwitterLiveSearch is configured here
 			// according to the config
 			if (configuration.getDirectoryConfig() == DirectoryConfig.RAM) {
 				directory = new RAMDirectory();
@@ -99,12 +99,12 @@ public class Twitter4SerioussearchFactory {
 				twitterStream.sample();
 			}
 
-			// set everything needed in Twitter4Serioussearch
+			// set everything needed in TwitterLiveSearch
 			twitter.setCurrentDirectory(directory);
 			twitter.setIndexWriter(iwriter);
 			twitter.setTweetHolder(tweetHolder);
 			twitter.setTwitterStream(twitterStream); // Referenz auf
-			// Twitter4Serioussearch
+			// TwitterLiveSearch
 			twitter.setSearcher(searcher);
 
 		} catch (IOException e) {

@@ -3,8 +3,8 @@ package language;
 
 import twitter4j.Status;
 import de.twitter4serioussearch.api.TweetListener;
-import de.twitter4serioussearch.api.Twitter4Serioussearch;
-import de.twitter4serioussearch.api.Twitter4SerioussearchFactory;
+import de.twitter4serioussearch.api.TwitterLiveSearch;
+import de.twitter4serioussearch.api.TwitterLiveSearchFactory;
 
 /**
  * Hello world!
@@ -12,11 +12,11 @@ import de.twitter4serioussearch.api.Twitter4SerioussearchFactory;
  */
 public class App 
 {
-	static Twitter4Serioussearch twitter;
+	static TwitterLiveSearch twitter;
 	
     public static void main( String[] args )
     {
-    	twitter = Twitter4SerioussearchFactory.build();
+    	twitter = TwitterLiveSearchFactory.build();
 		twitter.registerQuery("Hallo", "1", new TweetListener() {
 			
 			@Override

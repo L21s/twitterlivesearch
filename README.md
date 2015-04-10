@@ -44,7 +44,7 @@ You can find instructions how to configure this API in *de.twitterlivesearch.api
 
 Use of the API itself is really simple. You need a main class which builds the TwitterLiveSearch object by making use of the TwitterLiveSearchFactory. 
 
-```
+```java
 public class App 
 {
 	static TwitterLiveSearch twitter;

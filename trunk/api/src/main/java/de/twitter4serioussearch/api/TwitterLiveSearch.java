@@ -24,16 +24,16 @@ import de.twitter4serioussearch.model.TweetHolder;
 /**
  * This is the single point of contact with the twitter4serioussearch library.
  * Please use the
- * {@link de.twitter4serioussearch.api.Twitter4SerioussearchFactory
- * Twitter4SerioussearchFactory} to create an instance of this class. This class
+ * {@link de.twitter4serioussearch.api.TwitterLiveSearchFactory
+ * TwitterLiveSearchFactory} to create an instance of this class. This class
  * is meant to be immutable. <br />
  * In case you are in a Java EE environment, it is best
- * practice to wrap your instance of Twitter4Serioussearch in a CDI Singleton.
+ * practice to wrap your instance of TwitterLiveSearch in a CDI Singleton.
  *
  * @author tobiaslarscheid
  *
  */
-public class Twitter4Serioussearch {
+public class TwitterLiveSearch {
 
 	/**
 	 * Lucene Index Writer. Is used to store documents in the index.

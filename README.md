@@ -24,7 +24,7 @@ If you do not want to do this you can package it via maven (as a jar) and add it
 
 ## How to use it?
 First of all you need to make sure that you have a twitter account and you have OAuth credentials for it. You can find this instructions by simply googling it.
-In your project you need two different configuration files:
+In your project you need two different configuration files in your resources-directory. If you use maven this is generally src/main/resources.
 
 *twitter4j.properties*
 ```

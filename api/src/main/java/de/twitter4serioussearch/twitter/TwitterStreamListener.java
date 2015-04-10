@@ -47,8 +47,9 @@ import de.twitter4serioussearch.model.TweetHolder;
  * <li>in case the buffer is full an old tweet will be deleted</li>
  * <li>the incoming tweet is checked against all registered queries. In case the
  * tweet matches a query, the listener of the query is invoked.</li
- * </ul> <br />
- * 
+ * </ul>
+ * <br />
+ *
  * @author schmitzhermes
  *
  */
@@ -84,8 +85,8 @@ public class TwitterStreamListener implements UserStreamListener,
 		Integer id = IdGenerator.getInstance().getNextId();
 		// updating the tweet holder which holds all tweet objects
 		try {
-			tweetHolder.getTweets().set(id, status);			
-		} catch(IndexOutOfBoundsException e) {
+			tweetHolder.getTweets().set(id, status);
+		} catch (IndexOutOfBoundsException e) {
 			tweetHolder.getTweets().add(status);
 		}
 		// adding a new document to the lucene index, text the tweets message
@@ -133,14 +134,15 @@ public class TwitterStreamListener implements UserStreamListener,
 				// because id must be unique!)
 				for (QueryWrapper qw : QueryManager.getInstance()
 						.getQueryWrappersForQuery(queryString)) {
-					if (log.isTraceEnabled()) {
-						log.trace("Informed client that new tweet is incoming: "
-								+ queryString + " (untokenized)");
-					}
 					Status tweet = tweetHolder.getTweet(document
 							.get(FieldNames.ID.getField()));
 					if (FilterManager.tweetMatchesFilter(tweet, qw.getFilter())) {
 						qw.getListener().handleNewTweet(tweet);
+						if (log.isTraceEnabled()) {
+							log.trace("Informed Listener " + qw.getListener()
+									+ " that new tweet is incoming: "
+									+ queryString + " (tokenized)");
+						}
 					}
 
 				}

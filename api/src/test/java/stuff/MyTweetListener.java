@@ -1,6 +1,6 @@
 package stuff;
 
-import de.twitter4serioussearch.api.TweetListener;
+import de.twitterlivesearch.api.TweetListener;
 import twitter4j.Status;
 
 public class MyTweetListener implements TweetListener {

@@ -2,9 +2,9 @@ package language;
 
 
 import twitter4j.Status;
-import de.twitter4serioussearch.api.TweetListener;
-import de.twitter4serioussearch.api.TwitterLiveSearch;
-import de.twitter4serioussearch.api.TwitterLiveSearchFactory;
+import de.twitterlivesearch.api.TweetListener;
+import de.twitterlivesearch.api.TwitterLiveSearch;
+import de.twitterlivesearch.api.TwitterLiveSearchFactory;
 
 /**
  * Hello world!

@@ -65,7 +65,7 @@ public class App
 }
 ```
 
-As you can see above: an instance of TwitterLiveSearch is build by the factory. TwitterLiveSearch provides a method to register a keyword. In this case the first argument "MyRegisteredKeyWord" is the keyword, the second argument "1" is the unique session id and the third argument is the Listener, which is invoked when a new tweet that matches the keyword is incoming.
+As you can see above: an instance of TwitterLiveSearch is build by the factory. TwitterLiveSearch provides a method to register a keyword. In this case the first argument "MyRegisteredKeyWord" is the keyword, the second argument "1" is the unique session id and the third argument is the Listener, which is invoked when a new tweet that matches the keyword is incoming. So in this case the JSON-encoded tweet is printed on System.out when a tweet "MyRegisteredKeyWord" is incoming.
 The folder /testdriver/ in this repo shows a simple example, which makes use of this API in connection with the JEE-WebSocket technology.
 
 ## Best Practices

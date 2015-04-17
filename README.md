@@ -70,6 +70,6 @@ As you can see above: an instance of TwitterLiveSearch is build by the factory. 
 The folder /testdriver/ in this repo shows a simple example, which makes use of this API in connection with the JEE-WebSocket technology.
 
 ## Best Practices
-- in case you are in JEE-Environment it is recommended (but absolutely necessary) that holds the TwitterLiveSearch object should be annotated with @Singleton
+- in case you are in JEE-Environment it is recommended (but not absolutely necessary) that the object that holds the TwitterLiveSearch object should be annotated with (CDI) @Singleton
 - we tried to make extended use of JavaDoc to make your life easier
 - our logging is based on log4j - by default it is set to TRACE-level (which shows every single detail). We recommend to set it to WARN-Level if you use this library in production
